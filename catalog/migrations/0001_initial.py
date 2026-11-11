@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Category",
             fields=[
-                ("id", models.BigAutoField(primary_key=True, serialize=False, verbose_name="ID")),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
                 ("name", models.CharField(max_length=120, verbose_name="Название")),
                 ("slug", models.SlugField(blank=True, max_length=180, unique=True, verbose_name="URL-имя")),
                 ("description", models.TextField(blank=True, verbose_name="Описание")),
@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Page",
             fields=[
-                ("id", models.BigAutoField(primary_key=True, serialize=False, verbose_name="ID")),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
                 ("slug", models.SlugField(max_length=180, unique=True, verbose_name="URL-имя")),
                 ("title", models.CharField(max_length=180, verbose_name="Заголовок")),
                 ("lead", models.TextField(blank=True, verbose_name="Вступление")),
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Product",
             fields=[
-                ("id", models.BigAutoField(primary_key=True, serialize=False, verbose_name="ID")),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
                 ("title", models.CharField(max_length=220, verbose_name="Название")),
                 ("slug", models.SlugField(blank=True, max_length=180, unique=True, verbose_name="URL-имя")),
                 ("status", models.CharField(
@@ -82,7 +82,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="ProductImage",
             fields=[
-                ("id", models.BigAutoField(primary_key=True, serialize=False, verbose_name="ID")),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
                 ("image", models.ImageField(
                     upload_to="products/%Y/%m/", verbose_name="Фотография",
                     validators=[
@@ -102,7 +102,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="ProductSpecification",
             fields=[
-                ("id", models.BigAutoField(primary_key=True, serialize=False, verbose_name="ID")),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
                 ("name", models.CharField(max_length=150, verbose_name="Параметр")),
                 ("value", models.CharField(max_length=300, verbose_name="Значение")),
                 ("sort_order", models.PositiveSmallIntegerField(default=0, verbose_name="Порядок")),
@@ -115,7 +115,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="ProductDocument",
             fields=[
-                ("id", models.BigAutoField(primary_key=True, serialize=False, verbose_name="ID")),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
                 ("title", models.CharField(max_length=150, verbose_name="Название документа")),
                 ("file", models.FileField(
                     upload_to="documents/%Y/%m/", verbose_name="PDF",
@@ -133,7 +133,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Inquiry",
             fields=[
-                ("id", models.BigAutoField(primary_key=True, serialize=False, verbose_name="ID")),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
                 ("name", models.CharField(max_length=150, verbose_name="Имя")),
                 ("email", models.EmailField(max_length=254, verbose_name="Email")),
                 ("phone", models.CharField(blank=True, max_length=60, verbose_name="Телефон")),
