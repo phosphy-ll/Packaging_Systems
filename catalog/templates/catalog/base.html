@@ -1,6 +1,6 @@
 {% load static catalog_i18n %}
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="{{ site_lang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,7 +17,7 @@
       <span>{% tr "Оборудование для розлива и упаковки пищевой продукции" %}</span>
       <span>{% tr "Алматы, Казахстан" %} <span class="separator">/</span> <a href="mailto:{{ company_email }}">{{ company_email }}</a></span>
     <div class="language-switch" aria-label="Language">
-        {% for code, label in site_languages.items %}<a href="?lang={{ code }}" class="{% if site_lang == code %}active{% endif %}" lang="{{ code }}" title="{{ label }}">{% if code == "kk" %}KZ{% elif code == "en" %}EN{% elif code == "it" %}IT{% else %}RU{% endif %}</a>{% endfor %}
+        {% for code, label in site_languages.items %}<a href="?lang={{ code }}" class="{% if site_lang == code %}active{% endif %}" lang="{{ code }}" title="{{ label|t:site_lang }}">{% if code == "kk" %}KZ{% elif code == "en" %}EN{% elif code == "it" %}IT{% else %}RU{% endif %}</a>{% endfor %}
       </div>
     </div>
   </div>
@@ -32,12 +32,11 @@
           <a href="{% url 'catalog:page' 'filling-lines' %}">{% tr "Направления" %} <span aria-hidden="true">⌄</span></a>
           <div class="dropdown-panel">
             {% for label, slug in nav_sections %}
-              <a href="{% url 'catalog:page' slug %}">{{ label }}</a>
+              <a href="{% url 'catalog:page' slug %}">{{ label|t:site_lang }}</a>
             {% endfor %}
           </div>
         </div>
         <a href="{% url 'catalog:product_list' %}">{% tr "Сейчас в продаже" %}</a>
-        <a href="{% url 'catalog:partners' %}">{% tr "Наши партнеры" %}</a>
         <a href="{% url 'catalog:page' 'service' %}">{% tr "Сервис" %}</a>
         <a href="{% url 'catalog:partners' %}">{% tr "Наши партнеры" %}</a>
         <a href="{% url 'catalog:contact' %}">{% tr "Контакты" %}</a>
@@ -49,9 +48,10 @@
           <a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a>
           <a href="{% url 'catalog:product_list' %}">{% tr "Сейчас в продаже" %}</a>
           {% for label, slug in nav_sections %}
-            <a href="{% url 'catalog:page' slug %}">{{ label }}</a>
+            <a href="{% url 'catalog:page' slug %}">{{ label|t:site_lang }}</a>
           {% endfor %}
-          <a href="{% url 'catalog:partners' %}">{% tr "Наши партнеры" %}</a><a href="{% url 'catalog:contact' %}">{% tr "Контакты и обратная связь" %}</a>
+          <a href="{% url 'catalog:partners' %}">{% tr "Наши партнеры" %}</a>
+          <a href="{% url 'catalog:contact' %}">{% tr "Контакты и обратная связь" %}</a>
         </nav>
       </details>
     </div>
@@ -69,9 +69,10 @@
       <div>
         <h3>{% tr "Направления" %}</h3>
         <a href="{% url 'catalog:page' 'filling-lines' %}">{% tr "Комплектные линии розлива" %}</a>
-        <a href="{% url 'catalog:page' 'equipment-units' %}">Узлы и оборудование</a>
-        <a href="{% url 'catalog:page' 'used-lines' %}">Бывшие в употреблении линии</a>
-        <a href="{% url 'catalog:page' 'spare-parts' %}">{% tr "Запасные части" %}</a><a href="{% url 'catalog:partners' %}">{% tr "Наши партнеры" %}</a>
+        <a href="{% url 'catalog:page' 'equipment-units' %}">{% tr "Узлы и оборудование" %}</a>
+        <a href="{% url 'catalog:page' 'used-lines' %}">{% tr "Бывшие в употреблении линии" %}</a>
+        <a href="{% url 'catalog:page' 'spare-parts' %}">{% tr "Запасные части" %}</a>
+        <a href="{% url 'catalog:partners' %}">{% tr "Наши партнеры" %}</a>
       </div>
       <div>
         <h3>{% tr "Информация" %}</h3>

@@ -76,4 +76,45 @@ class CatalogTests(TestCase):
         self.assertTrue(Page.objects.filter(slug="service").exists())
         self.assertEqual(Product.objects.filter(title="Линия розлива Bertolaso 40.40.6").count(), 1)
         product = Product.objects.get(title="Линия розлива Bertolaso 40.40.6")
-        self.assertEqual(product.status, Product.Status.DRAFT)
+        self.assertEqual(product.status, Product.Status.PUBLISHED)
+
+
+
+class UpgradeTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_content")
+
+    def test_four_languages_switch_and_session(self):
+        url=reverse("catalog:home")
+        for lang in ("ru", "kk", "en", "it"):
+            response=self.client.get(url, {"lang":lang})
+            self.assertEqual(response.status_code,200)
+            self.assertContains(response, f'lang="{lang}"')
+        response=self.client.get(url)
+        self.assertContains(response, "Impianti di")
+
+    def test_partner_page(self):
+        response=self.client.get(reverse("catalog:partners"))
+        self.assertEqual(response.status_code,200)
+        self.assertContains(response,"SIPA")
+
+    def test_preview_staff_only(self):
+        from django.contrib.auth import get_user_model
+        product=Product.objects.get(title="Линия розлива Bertolaso 40.40.6")
+        product.status=Product.Status.DRAFT
+        product.save(update_fields=["status"])
+        url=reverse("catalog:preview_product",kwargs={"pk":product.pk})
+        self.assertEqual(self.client.get(url).status_code,302)
+        self.assertEqual(self.client.get(product.get_absolute_url()).status_code,404)
+        user=get_user_model().objects.create_user(username="previewer",password="test1234",is_staff=True)
+        self.client.force_login(user)
+        response=self.client.get(url)
+        self.assertEqual(response.status_code,200)
+        self.assertContains(response,"Предпросмотр товара")
+
+    def test_translations_exist_for_seeded_products_and_pages(self):
+        from .models import PageTranslation, ProductTranslation, Partner
+        self.assertEqual(PageTranslation.objects.filter(page__slug="service").count(),3)
+        self.assertEqual(ProductTranslation.objects.filter(product__title="Линия розлива Bertolaso 40.40.6").count(),3)
+        self.assertGreaterEqual(Partner.objects.count(),16)

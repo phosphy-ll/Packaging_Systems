@@ -25,16 +25,16 @@
         {{ form.product }}{{ form.website }}
         {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
         <div class="form-row">
-          <label>Имя *{{ form.name }}{{ form.name.errors }}</label>
+          <label>{% tr "Имя" %} *{{ form.name }}{{ form.name.errors }}</label>
           <label>Email *{{ form.email }}{{ form.email.errors }}</label>
         </div>
         <div class="form-row">
-          <label>Телефон{{ form.phone }}{{ form.phone.errors }}</label>
-          <label>Компания{{ form.company }}{{ form.company.errors }}</label>
+          <label>{% tr "Телефон" %}{{ form.phone }}{{ form.phone.errors }}</label>
+          <label>{% tr "Компания" %}{{ form.company }}{{ form.company.errors }}</label>
         </div>
-        <label>Сообщение *{{ form.message }}{{ form.message.errors }}</label>
+        <label>{% tr "Сообщение" %} *{{ form.message }}{{ form.message.errors }}</label>
         {% if form.initial.product %}<div class="form-info">{% tr "К обращению прикреплено выбранное оборудование." %}</div>{% endif %}
-        <label class="checkbox-field">{{ form.consent }} <span>Согласен(на) на <a href="{% url 'catalog:privacy' %}" target="_blank" rel="noopener">обработку персональных данных</a> для ответа на мой запрос. *</span></label>
+        <label class="checkbox-field">{{ form.consent }} <span><a href="{% url 'catalog:privacy' %}" target="_blank" rel="noopener">{% tr "Согласен(на) на обработку персональных данных для ответа на мой запрос." %}</a> *</span></label>
         {{ form.consent.errors }}
         <button class="button button-primary button-large button-full" type="submit">{% tr "Отправить запрос" %} ↗</button>
       </form>

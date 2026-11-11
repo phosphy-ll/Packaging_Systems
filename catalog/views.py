@@ -108,7 +108,7 @@ def contact(request):
         product = visible_products().filter(slug=request.GET.get("product", "")).first()
         if product:
             initial["product"] = product.pk
-    form = InquiryForm(request.POST or None, initial=initial)
+    form = InquiryForm(request.POST or None, initial=initial, language=getattr(request, "site_lang", "ru"))
     if request.method == "POST" and form.is_valid():
         inquiry = form.save()
         product_title = inquiry.product.title if inquiry.product else "Без привязки к товару"

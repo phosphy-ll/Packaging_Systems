@@ -27,7 +27,7 @@
         {% endif %}
       </div>
       <div class="detail-content">
-        <div class="eyebrow"><span class="eyebrow-line"></span> {{ product.category.name|upper }}</div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> {{ product.category.name|t:site_lang|upper }}</div>
         <h1>{{ product|localized:"title" }}</h1>
         <div class="detail-badges"><span>{{ product.get_condition_display|t:site_lang }}</span><span>{{ product.get_availability_display|t:site_lang }}</span></div>
         {% if product.summary %}<p class="detail-summary">{{ product|localized:"summary" }}</p>{% endif %}
