@@ -1,0 +1,69 @@
+{% extends "catalog/base.html" %}
+{% load static %}
+{% block content %}
+<section class="product-detail-section">
+  <div class="container">
+    <div class="breadcrumbs breadcrumbs-light"><a href="{% url 'catalog:home' %}">Главная</a><span>/</span><a href="{% url 'catalog:product_list' %}">Сейчас в продаже</a><span>/</span>{{ product.title|truncatechars:56 }}</div>
+    <div class="detail-grid">
+      <div class="detail-media">
+        {% with cover=product.cover_image %}
+          {% if cover %}
+            <div class="detail-primary-image"><img src="{{ cover.image.url }}" alt="{{ cover.alt_text|default:product.title }}"></div>
+          {% else %}
+            <div class="detail-primary-image detail-placeholder"><img src="{% static 'catalog/equipment-placeholder.svg' %}" alt=""></div>
+          {% endif %}
+        {% endwith %}
+        {% if product.images.count > 1 %}
+          <div class="detail-thumbnails" aria-label="Фотографии оборудования">
+            {% for image in product.images.all %}
+              <button type="button" class="photo-thumb" data-image="{{ image.image.url }}" data-alt="{{ image.alt_text|default:product.title }}" aria-label="Открыть фото {{ forloop.counter }}">
+                <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.title }}" loading="lazy">
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <div class="detail-content">
+        <div class="eyebrow"><span class="eyebrow-line"></span> {{ product.category.name|upper }}</div>
+        <h1>{{ product.title }}</h1>
+        <div class="detail-badges"><span>{{ product.get_condition_display }}</span><span>{{ product.get_availability_display }}</span></div>
+        {% if product.summary %}<p class="detail-summary">{{ product.summary }}</p>{% endif %}
+        <div class="detail-price">
+          <span>Стоимость оборудования</span>
+          <strong>{% if product.price is not None %}{{ product.price|floatformat:0 }} {{ product.currency }}{% else %}По запросу{% endif %}</strong>
+        </div>
+        <a class="button button-primary button-large button-full" href="{% url 'catalog:contact' %}?product={{ product.slug|urlencode }}">Запросить информацию ↗</a>
+        <p class="detail-support">Уточним комплектацию, условия поставки и технические параметры.</p>
+        <div class="detail-quickfacts">
+          {% if product.manufacturer %}<div><span>Производитель</span><strong>{{ product.manufacturer }}</strong></div>{% endif %}
+          {% if product.model_name %}<div><span>Модель</span><strong>{{ product.model_name }}</strong></div>{% endif %}
+          {% if product.production_year %}<div><span>Год выпуска</span><strong>{{ product.production_year }}</strong></div>{% endif %}
+          {% if product.capacity_per_hour %}<div><span>Производительность</span><strong>{{ product.capacity_per_hour }} шт/час</strong></div>{% endif %}
+          {% if product.container_type %}<div><span>Тип тары</span><strong>{{ product.container_type }}</strong></div>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% if product.description or product.specifications.exists or product.documents.exists %}
+      <div class="detail-lower">
+        <div class="detail-description">
+          <div class="eyebrow"><span class="eyebrow-line"></span> ПОДРОБНЕЕ ОБ ОБОРУДОВАНИИ</div>
+          <h2>Описание</h2>
+          {{ product.description|linebreaks }}
+          {% if not product.description %}<p>Технические детали предоставляются по запросу.</p>{% endif %}
+        </div>
+        <div class="detail-specs">
+          {% if product.specifications.exists %}
+            <h2>Характеристики</h2>
+            <dl>{% for spec in product.specifications.all %}<div><dt>{{ spec.name }}</dt><dd>{{ spec.value }}</dd></div>{% endfor %}</dl>
+          {% endif %}
+          {% if product.documents.exists %}
+            <h2>Документы</h2>
+            {% for document in product.documents.all %}<a class="document-link" href="{{ document.file.url }}" download>{{ document.title }} <span>PDF ↓</span></a>{% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+<section class="cta-section"><div class="container cta-inner"><div><div class="eyebrow eyebrow-light"><span class="eyebrow-line"></span> КОНСУЛЬТАЦИЯ</div><h2>Остались <em>вопросы?</em></h2><p>Отправьте запрос с названием интересующего оборудования.</p></div><a class="button button-white button-large" href="{% url 'catalog:contact' %}?product={{ product.slug|urlencode }}">Связаться ↗</a></div></section>
+{% endblock %}

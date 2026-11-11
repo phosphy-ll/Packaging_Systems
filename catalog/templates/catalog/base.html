@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111b23">
+  <meta name="description" content="Packaging Systems: линии розлива, упаковочное оборудование, запасные части и технический сервис в Казахстане.">
+  <title>{{ page_title|default:"Packaging Systems" }}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'catalog/favicon.svg' %}">
+  <link rel="stylesheet" href="{% static 'catalog/site.css' %}">
+  <script defer src="{% static 'catalog/site.js' %}"></script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <span>Оборудование для розлива и упаковки пищевой продукции</span>
+      <span>Алматы, Казахстан <span class="separator">/</span> <a href="mailto:{{ company_email }}">{{ company_email }}</a></span>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{% url 'catalog:home' %}" class="brand" aria-label="Packaging Systems - главная">
+        <img src="{% static 'catalog/brand-logo.webp' %}" alt="Packaging Systems" width="180" height="142">
+      </a>
+      <nav class="nav-main" aria-label="Основная навигация">
+        <a href="{% url 'catalog:home' %}">Главная</a>
+        <div class="nav-dropdown">
+          <a href="{% url 'catalog:page' 'filling-lines' %}">Направления <span aria-hidden="true">⌄</span></a>
+          <div class="dropdown-panel">
+            {% for label, slug in nav_sections %}
+              <a href="{% url 'catalog:page' slug %}">{{ label }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        <a href="{% url 'catalog:product_list' %}">Сейчас в продаже</a>
+        <a href="{% url 'catalog:page' 'service' %}">Сервис</a>
+        <a href="{% url 'catalog:contact' %}">Контакты</a>
+      </nav>
+      <a class="button button-primary header-cta" href="{% url 'catalog:contact' %}">Оставить запрос <span aria-hidden="true">↗</span></a>
+      <details class="mobile-menu">
+        <summary>Меню <span aria-hidden="true">☰</span></summary>
+        <nav aria-label="Мобильное меню">
+          <a href="{% url 'catalog:home' %}">Главная</a>
+          <a href="{% url 'catalog:product_list' %}">Сейчас в продаже</a>
+          {% for label, slug in nav_sections %}
+            <a href="{% url 'catalog:page' slug %}">{{ label }}</a>
+          {% endfor %}
+          <a href="{% url 'catalog:contact' %}">Контакты и обратная связь</a>
+        </nav>
+      </details>
+    </div>
+  </header>
+  <main id="content">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="footer-wordmark" href="{% url 'catalog:home' %}"><span>PS</span> Packaging Systems</a>
+        <p>Оборудование для розлива и упаковки, запасные части и сервис.</p>
+        <p class="footer-location">Алматы, Казахстан</p>
+      </div>
+      <div>
+        <h3>Направления</h3>
+        <a href="{% url 'catalog:page' 'filling-lines' %}">Комплектные линии розлива</a>
+        <a href="{% url 'catalog:page' 'equipment-units' %}">Узлы и оборудование</a>
+        <a href="{% url 'catalog:page' 'used-lines' %}">Бывшие в употреблении линии</a>
+        <a href="{% url 'catalog:page' 'spare-parts' %}">Запасные части</a>
+      </div>
+      <div>
+        <h3>Информация</h3>
+        <a href="{% url 'catalog:product_list' %}">Сейчас в продаже</a>
+        <a href="{% url 'catalog:page' 'service' %}">Сервис</a>
+        <a href="{% url 'catalog:contact' %}">Обратная связь</a>
+        <a href="{% url 'catalog:privacy' %}">Персональные данные</a>
+      </div>
+      <div class="footer-contact">
+        <h3>Связаться с нами</h3>
+        <a class="footer-email" href="mailto:{{ company_email }}">{{ company_email }}</a>
+        <p>Отправьте запрос, чтобы обсудить подбор оборудования или поставку запчастей.</p>
+        <a class="text-link light" href="{% url 'catalog:contact' %}">Написать нам <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    <div class="container footer-bottom"><span>© {% now "Y" %} Packaging Systems</span><span>Flexibility and knowledge</span></div>
+  </footer>
+</body>
+</html>
