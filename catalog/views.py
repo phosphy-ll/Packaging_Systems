@@ -120,7 +120,7 @@ def contact(request):
             f"Сообщение:\n{inquiry.message}\n"
         )
         try:
-            if not settings.EMAIL_HOST and not settings.DEBUG:
+            if not settings.EMAIL_HOST and not settings.DEBUG and settings.EMAIL_BACKEND != "django.core.mail.backends.locmem.EmailBackend":
                 return redirect("catalog:thanks")
             sent = EmailMessage(
                 subject="Packaging Systems: новая заявка",
