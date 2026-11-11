@@ -15,6 +15,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class ProductImageInline(admin.TabularInline):
+    class Media:
+        js = ("catalog/admin_photos.js",)
+
     model = ProductImage
     extra = 1
     fields = ("image", "preview", "alt_text", "is_cover", "sort_order")
