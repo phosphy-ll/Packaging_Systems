@@ -1,0 +1,28 @@
+{% extends "catalog/base.html" %}
+{% block content %}
+<section class="page-hero page-hero-dark">
+  <div class="container">
+    <div class="breadcrumbs"><a href="{% url 'catalog:home' %}">Главная</a><span>/</span> {{ page.title }}</div>
+    <div class="eyebrow eyebrow-light"><span class="eyebrow-line"></span> НАПРАВЛЕНИЯ PACKAGING SYSTEMS</div>
+    <h1>{{ page.title }}</h1>
+    {% if page.lead %}<p>{{ page.lead }}</p>{% endif %}
+  </div>
+</section>
+<section class="section">
+  <div class="container editorial-grid">
+    <article class="rich-text">
+      {{ page.body|linebreaks }}
+      {% if page.slug == "filling-lines" %}
+        <p>Производитель комплектных линий и оборудования: <a href="https://www.sipa.it/" target="_blank" rel="noopener noreferrer">SIPA (официальный сайт) ↗</a>.</p>
+      {% endif %}
+    </article>
+    <aside class="editorial-aside">
+      <span class="card-number">НУЖНО ПРЕДЛОЖЕНИЕ?</span>
+      <h2>Подберём решение для вашего производства</h2>
+      <p>Опишите требуемое оборудование, характеристики и условия поставки.</p>
+      <a class="button button-primary" href="{% url 'catalog:contact' %}">Отправить запрос ↗</a>
+      <div class="aside-email"><span>Или напишите нам</span><a href="mailto:{{ company_email }}">{{ company_email }}</a></div>
+    </aside>
+  </div>
+</section>
+{% endblock %}
