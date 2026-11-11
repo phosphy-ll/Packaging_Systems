@@ -1,4 +1,5 @@
 {% extends "catalog/base.html" %}
+{% load catalog_i18n %}
 {% block content %}
-<section class="section feedback-success"><div class="container narrow-content"><div class="eyebrow"><span class="eyebrow-line"></span> PACKAGING SYSTEMS</div><h1>Запрос получен</h1><p>Спасибо за обращение. Ваше сообщение сохранено, мы свяжемся с вами по указанным контактам.</p><a class="button button-primary button-large" href="{% url 'catalog:home' %}">На главную ↗</a></div></section>
+<section class="section feedback-success"><div class="container narrow-content"><div class="eyebrow"><span class="eyebrow-line"></span> PACKAGING SYSTEMS</div><h1>{% tr "Запрос получен" %}</h1><p>{% tr "Спасибо за обращение. Ваше сообщение сохранено, мы свяжемся с вами по указанным контактам." %}</p><a class="button button-primary button-large" href="{% url 'catalog:home' %}">{% tr "На главную" %} ↗</a></div></section>
 {% endblock %}

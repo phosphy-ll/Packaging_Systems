@@ -1,23 +1,24 @@
 {% extends "catalog/base.html" %}
+{% load catalog_i18n %}
 {% block content %}
 <section class="page-hero page-hero-dark">
   <div class="container">
-    <div class="breadcrumbs"><a href="{% url 'catalog:home' %}">Главная</a><span>/</span> Сейчас в продаже</div>
-    <div class="eyebrow eyebrow-light"><span class="eyebrow-line"></span> КАТАЛОГ ОБОРУДОВАНИЯ</div>
-    <h1>Сейчас <em>в продаже</em></h1>
-    <p>Новые и бывшие в употреблении линии, отдельные узлы и запасные части. Наличие и комплектацию уточняйте в запросе.</p>
+    <div class="breadcrumbs"><a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a><span>/</span> {% tr "Сейчас в продаже" %}</div>
+    <div class="eyebrow eyebrow-light"><span class="eyebrow-line"></span> {% tr "КАТАЛОГ ОБОРУДОВАНИЯ" %}</div>
+    <h1>{% tr "Сейчас в продаже" %}</h1>
+    <p>{% tr "Новые и бывшие в употреблении линии, отдельные узлы и запасные части. Наличие и комплектацию уточняйте в запросе." %}</p>
   </div>
 </section>
 <section class="section section-catalog">
   <div class="container">
     <form class="filters" method="get" action="{% url 'catalog:product_list' %}">
-      <label class="filter-search"><span>Поиск по каталогу</span><input type="search" name="q" value="{{ query }}" placeholder="Название, производитель, модель..."></label>
-      <label><span>Категория</span><select name="category"><option value="">Все категории</option>{% for category in categories %}<option value="{{ category.slug }}" {% if selected_category == category.slug %}selected{% endif %}>{{ category.name }}</option>{% endfor %}</select></label>
-      <label><span>Состояние</span><select name="condition"><option value="">Любое</option><option value="new" {% if selected_condition == 'new' %}selected{% endif %}>Новое</option><option value="used" {% if selected_condition == 'used' %}selected{% endif %}>Б/У</option><option value="spare" {% if selected_condition == 'spare' %}selected{% endif %}>Запасная часть</option></select></label>
-      <label><span>Сортировка</span><select name="sort"><option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Сначала новые</option><option value="price_low" {% if selected_sort == 'price_low' %}selected{% endif %}>Цена: по возрастанию</option><option value="price_high" {% if selected_sort == 'price_high' %}selected{% endif %}>Цена: по убыванию</option></select></label>
-      <button class="button button-primary filter-submit" type="submit">Найти ↗</button>
+      <label class="filter-search"><span>{% tr "Поиск по каталогу" %}</span><input type="search" name="q" value="{{ query }}" placeholder="Название, производитель, модель..."></label>
+      <label><span>{% tr "Категория" %}</span><select name="category"><option value="">{% tr "Все категории" %}</option>{% for category in categories %}<option value="{{ category.slug }}" {% if selected_category == category.slug %}selected{% endif %}>{{ category.name }}</option>{% endfor %}</select></label>
+      <label><span>{% tr "Состояние" %}</span><select name="condition"><option value="">{% tr "Любое" %}</option><option value="new" {% if selected_condition == 'new' %}selected{% endif %}>{% tr "Новое" %}</option><option value="used" {% if selected_condition == 'used' %}selected{% endif %}>{% tr "Б/У" %}</option><option value="spare" {% if selected_condition == 'spare' %}selected{% endif %}>{% tr "Запасная часть" %}</option></select></label>
+      <label><span>{% tr "Сортировка" %}</span><select name="sort"><option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>{% tr "Сначала новые" %}</option><option value="price_low" {% if selected_sort == 'price_low' %}selected{% endif %}>{% tr "Цена: по возрастанию" %}</option><option value="price_high" {% if selected_sort == 'price_high' %}selected{% endif %}>{% tr "Цена: по убыванию" %}</option></select></label>
+      <button class="button button-primary filter-submit" type="submit">{% tr "Найти" %} ↗</button>
     </form>
-    <div class="listing-top"><span>Найдено предложений: <strong>{{ page_obj.paginator.count }}</strong></span><a href="{% url 'catalog:product_list' %}">Сбросить фильтры ↗</a></div>
+    <div class="listing-top"><span>{% tr "Найдено предложений" %}: <strong>{{ page_obj.paginator.count }}</strong></span><a href="{% url 'catalog:product_list' %}">{% tr "Сбросить фильтры" %} ↗</a></div>
     {% if page_obj.object_list %}
       <div class="product-grid">{% for product in page_obj %}{% include "catalog/_product_card.html" %}{% endfor %}</div>
       {% if page_obj.has_other_pages %}
@@ -30,8 +31,8 @@
     {% else %}
       <div class="catalog-empty">
         <span class="empty-icon">PS /</span>
-        <div><h2>Пока нет опубликованных предложений</h2><p>Попробуйте изменить фильтры или направьте запрос. Мы поможем подобрать оборудование под ваши задачи.</p></div>
-        <a class="button button-primary" href="{% url 'catalog:contact' %}">Оставить запрос ↗</a>
+        <div><h2>{% tr "Пока нет опубликованных предложений" %}</h2><p>{% tr "Попробуйте изменить фильтры или направьте запрос. Мы поможем подобрать оборудование под ваши задачи." %}</p></div>
+        <a class="button button-primary" href="{% url 'catalog:contact' %}">{% tr "Оставить запрос" %} ↗</a>
       </div>
     {% endif %}
   </div>

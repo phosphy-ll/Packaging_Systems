@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from .models import (
-    Category, Inquiry, Page, Product, ProductDocument, ProductImage, ProductSpecification,
+    Category, Inquiry, Page, Product, ProductDocument, ProductImage, ProductSpecification, PageTranslation, ProductTranslation, Partner,
 )
 
 
@@ -37,6 +37,15 @@ class ProductDocumentInline(admin.TabularInline):
     extra = 0
 
 
+class ProductTranslationInline(admin.StackedInline):
+    model = ProductTranslation
+    extra = 0
+    max_num = 3
+    fields = ("language", "title", "summary", "description")
+    verbose_name = "Перевод товара"
+    verbose_name_plural = "Переводы товара: қазақша / English / italiano"
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
@@ -49,7 +58,8 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     readonly_fields = ("created_at", "updated_at")
     list_per_page = 25
-    inlines = [ProductImageInline, ProductSpecificationInline, ProductDocumentInline]
+    inlines = [ProductImageInline, ProductSpecificationInline, ProductDocumentInline, ProductTranslationInline]
+    change_form_template = "admin/catalog/product/change_form.html"
     fieldsets = (
         ("Публикация", {"fields": ("title", "slug", "category", "status", "availability", "condition", "featured")}),
         ("Описание", {"fields": ("summary", "description")}),
@@ -59,12 +69,20 @@ class ProductAdmin(admin.ModelAdmin):
     )
 
 
+class PageTranslationInline(admin.StackedInline):
+    model = PageTranslation
+    extra = 0
+    max_num = 3
+    verbose_name_plural = "Переводы страницы"
+
+
 @admin.register(Page)
 class PageAdmin(admin.ModelAdmin):
     list_display = ("title", "slug", "is_published", "updated_at")
     list_editable = ("is_published",)
     search_fields = ("title", "body")
     prepopulated_fields = {"slug": ("title",)}
+    inlines = [PageTranslationInline]
 
 
 @admin.register(Inquiry)
@@ -88,3 +106,21 @@ class InquiryAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+@admin.register(Partner)
+class PartnerAdmin(admin.ModelAdmin):
+    list_display = ("name", "logo_preview", "website", "sort_order", "is_active")
+    list_editable = ("sort_order", "is_active")
+    search_fields = ("name",)
+    readonly_fields = ("logo_preview",)
+    fields = ("name", "website", "logo", "logo_preview", "sort_order", "is_active")
+
+    @admin.display(description="Логотип")
+    def logo_preview(self, obj):
+        if obj.pk and obj.logo:
+            return format_html(
+                '<img src="{}" alt="" style="width:120px;height:65px;object-fit:contain">',
+                obj.logo.url,
+            )
+        return "Добавьте логотип"

@@ -1,6 +1,7 @@
 {% extends "catalog/base.html" %}
+{% load catalog_i18n %}
 {% block content %}
-<section class="page-hero page-hero-dark"><div class="container"><div class="breadcrumbs"><a href="{% url 'catalog:home' %}">Главная</a><span>/</span> Персональные данные</div><h1>Обработка персональных данных</h1></div></section>
+<section class="page-hero page-hero-dark"><div class="container"><div class="breadcrumbs"><a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a><span>/</span> {% tr "Персональные данные" %}</div><h1>Обработка персональных данных</h1></div></section>
 <section class="section"><div class="container narrow-content rich-text">
   <p>При отправке формы Packaging Systems получает указанные вами имя, email, необязательные телефон и компанию, текст сообщения и сведения об интересующем оборудовании.</p>
   <p>Данные используются для получения и обработки запроса, обратной связи и подготовки предложения. Обращение сохраняется в закрытой административной системе. При наличии почтовой настройки копия отправляется на адрес <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>

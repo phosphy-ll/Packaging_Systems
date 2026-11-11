@@ -1,24 +1,25 @@
 {% extends "catalog/base.html" %}
+{% load catalog_i18n %}
 {% block content %}
 <section class="page-hero page-hero-dark">
   <div class="container">
-    <div class="breadcrumbs"><a href="{% url 'catalog:home' %}">Главная</a><span>/</span> Обратная связь</div>
-    <div class="eyebrow eyebrow-light"><span class="eyebrow-line"></span> СВЯЖИТЕСЬ С НАМИ</div>
-    <h1>Обратная <em>связь</em></h1>
-    <p>Расскажите о своём запросе, и мы свяжемся с вами по указанному адресу.</p>
+    <div class="breadcrumbs"><a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a><span>/</span> {% tr "Обратная связь" %}</div>
+    <div class="eyebrow eyebrow-light"><span class="eyebrow-line"></span> {% tr "СВЯЖИТЕСЬ С НАМИ" %}</div>
+    <h1>{% tr "Обратная связь" %}</h1>
+    <p>{% tr "Расскажите о своём запросе, и мы свяжемся с вами по указанному адресу." %}</p>
   </div>
 </section>
 <section class="section">
   <div class="container contact-grid">
     <div class="contact-information">
       <div class="eyebrow"><span class="eyebrow-line"></span> КОНТАКТЫ</div>
-      <h2>Готовы обсудить <span>ваш проект</span></h2>
-      <div class="contact-block"><span>ЭЛЕКТРОННАЯ ПОЧТА</span><a href="mailto:{{ company_email }}">{{ company_email }}</a></div>
-      <div class="contact-block"><span>МЕСТОПОЛОЖЕНИЕ</span><strong>Алматы, Казахстан</strong></div>
-      <p>Заявки из формы также сохраняются в системе, чтобы менеджер мог обработать обращение.</p>
+      <h2>{% tr "Готовы обсудить ваш проект" %}</h2>
+      <div class="contact-block"><span>{% tr "ЭЛЕКТРОННАЯ ПОЧТА" %}</span><a href="mailto:{{ company_email }}">{{ company_email }}</a></div>
+      <div class="contact-block"><span>{% tr "МЕСТОПОЛОЖЕНИЕ" %}</span><strong>{% tr "Алматы, Казахстан" %}</strong></div>
+      <p>{% tr "Заявки из формы также сохраняются в системе, чтобы менеджер мог обработать обращение." %}</p>
     </div>
     <div class="form-panel">
-      <div class="form-heading"><span class="card-number">ЗАЯВКА / PACKAGING SYSTEMS</span><h2>Отправить запрос</h2><p>Поля, отмеченные *, обязательны.</p></div>
+      <div class="form-heading"><span class="card-number">{% tr "ЗАЯВКА / PACKAGING SYSTEMS" %}</span><h2>{% tr "Отправить запрос" %}</h2><p>{% tr "Поля, отмеченные *, обязательны." %}</p></div>
       <form method="post" action="{% url 'catalog:contact' %}" class="contact-form" novalidate>
         {% csrf_token %}
         {{ form.product }}{{ form.website }}
@@ -32,10 +33,10 @@
           <label>Компания{{ form.company }}{{ form.company.errors }}</label>
         </div>
         <label>Сообщение *{{ form.message }}{{ form.message.errors }}</label>
-        {% if form.initial.product %}<div class="form-info">К обращению прикреплено выбранное оборудование.</div>{% endif %}
+        {% if form.initial.product %}<div class="form-info">{% tr "К обращению прикреплено выбранное оборудование." %}</div>{% endif %}
         <label class="checkbox-field">{{ form.consent }} <span>Согласен(на) на <a href="{% url 'catalog:privacy' %}" target="_blank" rel="noopener">обработку персональных данных</a> для ответа на мой запрос. *</span></label>
         {{ form.consent.errors }}
-        <button class="button button-primary button-large button-full" type="submit">Отправить запрос ↗</button>
+        <button class="button button-primary button-large button-full" type="submit">{% tr "Отправить запрос" %} ↗</button>
       </form>
     </div>
   </div>

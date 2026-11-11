@@ -1,22 +1,22 @@
-{% load static %}
+{% load static catalog_i18n %}
 <article class="product-card">
-  <a class="product-image" href="{{ product.get_absolute_url }}" aria-label="Открыть {{ product.title }}">
-    {% with photo=product.cover_image %}
-      {% if photo %}
-        <img src="{{ photo.image.url }}" alt="{{ photo.alt_text|default:product.title }}" loading="lazy">
-      {% else %}
-        <img src="{% static 'catalog/equipment-placeholder.svg' %}" alt="" loading="lazy">
-      {% endif %}
-    {% endwith %}
-    <span class="product-condition">{{ product.get_condition_display }}</span>
+  <a class="product-image" href="{{ product.get_absolute_url }}" aria-label="Открыть {{ product|localized:"title" }}">
+    {% if product.images.all %}
+      {% for photo in product.images.all %}
+      <img data-card-slide class="{% if forloop.first %}active{% endif %}" src="{{ photo.image.url }}" alt="{{ photo.alt_text|default:product.title }}" loading="lazy">
+      {% endfor %}
+    {% else %}
+      <img src="{% static 'catalog/equipment-placeholder.svg' %}" alt="" loading="lazy">
+    {% endif %}
+    <span class="product-condition">{{ product.get_condition_display|t:site_lang }}</span>
   </a>
   <div class="product-info">
-    <div class="product-meta"><span>{{ product.category.name }}</span><span>{{ product.get_availability_display }}</span></div>
-    <h3><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h3>
-    {% if product.summary %}<p>{{ product.summary|truncatechars:115 }}</p>{% endif %}
+    <div class="product-meta"><span>{{ product.category.name }}</span><span>{{ product.get_availability_display|t:site_lang }}</span></div>
+    <h3><a href="{{ product.get_absolute_url }}">{{ product|localized:"title" }}</a></h3>
+    {% if product.summary %}<p>{{ product|localized:"summary"|truncatechars:115 }}</p>{% endif %}
     <div class="product-bottom">
-      <div class="product-price">{% if product.price is not None %}{{ product.price|floatformat:0 }} <span>{{ product.currency }}</span>{% else %}<span>Цена по запросу</span>{% endif %}</div>
-      <a class="product-go" href="{{ product.get_absolute_url }}" aria-label="Подробнее о {{ product.title }}">↗</a>
+      <div class="product-price">{% if product.price is not None %}{{ product.price|floatformat:0 }} <span>{{ product.currency }}</span>{% else %}<span>{% tr "Цена по запросу" %}</span>{% endif %}</div>
+      <a class="product-go" href="{{ product.get_absolute_url }}" aria-label="Подробнее о {{ product|localized:"title" }}">↗</a>
     </div>
   </div>
 </article>

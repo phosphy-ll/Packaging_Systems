@@ -5,12 +5,13 @@ from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from .forms import InquiryForm
-from .models import Category, Page, Product
+from .models import Category, Page, Product, Partner
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ def visible_products():
         Product.objects.filter(status=Product.Status.PUBLISHED, category__is_active=True)
         .exclude(availability=Product.Availability.SOLD)
         .select_related("category")
-        .prefetch_related("images")
+        .prefetch_related("images", "translations")
     )
 
 
@@ -42,6 +43,7 @@ def home(request):
         "home_page": home_page,
         "featured": featured,
         "categories": Category.objects.filter(is_active=True)[:5],
+        "partners": Partner.objects.filter(is_active=True),
         "page_title": "Packaging Systems | Оборудование для розлива",
     })
 
@@ -93,7 +95,7 @@ def product_detail(request, slug):
 
 
 def info_page(request, slug):
-    page = get_object_or_404(Page, slug=slug, is_published=True)
+    page = get_object_or_404(Page.objects.prefetch_related("translations"), slug=slug, is_published=True)
     return render(request, "catalog/info_page.html", {
         "page": page, "page_title": f"{page.title} | Packaging Systems",
     })
@@ -150,4 +152,27 @@ def thanks(request):
 def privacy(request):
     return render(request, "catalog/privacy.html", {
         "page_title": "Обработка персональных данных | Packaging Systems",
+    })
+
+
+@staff_member_required
+def preview_product(request, pk):
+    """Staff-only preview; drafts are never exposed through public catalog URLs."""
+    product = get_object_or_404(
+        Product.objects.select_related("category").prefetch_related(
+            "images", "specifications", "documents", "translations"
+        ),
+        pk=pk,
+    )
+    return render(request, "catalog/product_detail.html", {
+        "product": product,
+        "preview_mode": True,
+        "page_title": f"Предпросмотр: {product.title} | Packaging Systems",
+    })
+
+
+def partners(request):
+    return render(request, "catalog/partners.html", {
+        "partners": Partner.objects.filter(is_active=True),
+        "page_title": "Наши партнеры | Packaging Systems",
     })
