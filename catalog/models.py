@@ -228,3 +228,60 @@ class Inquiry(models.Model):
 
     def __str__(self):
         return f"{self.name} / {self.created_at:%d.%m.%Y}"
+
+
+class PageTranslation(models.Model):
+    language = models.CharField(
+        "Язык", choices=[("kk", "Қазақша"), ("en", "English"), ("it", "Italiano")],
+        max_length=2,
+    )
+    page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="translations")
+    title = models.CharField("Заголовок", max_length=180, blank=True)
+    lead = models.TextField("Вступление", blank=True)
+    body = models.TextField("Основной текст", blank=True)
+
+    class Meta:
+        unique_together = ("page", "language")
+        verbose_name = "Перевод страницы"
+        verbose_name_plural = "Переводы страниц"
+
+    def __str__(self):
+        return f"{self.page} ({self.language})"
+
+
+class ProductTranslation(models.Model):
+    language = models.CharField(
+        "Язык", choices=[("kk", "Қазақша"), ("en", "English"), ("it", "Italiano")],
+        max_length=2,
+    )
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="translations")
+    title = models.CharField("Название", max_length=220, blank=True)
+    summary = models.CharField("Краткое описание", max_length=350, blank=True)
+    description = models.TextField("Полное описание", blank=True)
+
+    class Meta:
+        unique_together = ("product", "language")
+        verbose_name = "Перевод товара"
+        verbose_name_plural = "Переводы товаров"
+
+    def __str__(self):
+        return f"{self.product} ({self.language})"
+
+
+class Partner(models.Model):
+    name = models.CharField("Название", max_length=150)
+    website = models.URLField("Сайт производителя", blank=True)
+    logo = models.ImageField(
+        "Логотип", upload_to="partners/", blank=True,
+        validators=[validate_upload_size],
+    )
+    sort_order = models.PositiveSmallIntegerField("Порядок", default=0)
+    is_active = models.BooleanField("Показывать на сайте", default=True)
+
+    class Meta:
+        ordering = ("sort_order", "name")
+        verbose_name = "Партнёр / производитель"
+        verbose_name_plural = "Наши партнёры"
+
+    def __str__(self):
+        return self.name

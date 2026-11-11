@@ -1,0 +1,5 @@
+{% extends "admin/base.html" %}{% load static %}
+{% block title %}{{ title }} | Packaging Systems{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'catalog/admin.css' %}">{% endblock %}
+{% block branding %}<div id="site-name"><a href="{% url 'admin:index' %}"><span class="admin-mark">PS</span> Packaging Systems <small>Панель управления</small></a></div>{% endblock %}
+{% block nav-global %}<div class="admin-shortcuts"><a href="/" target="_blank" rel="noopener">Открыть сайт ↗</a><a href="{% url 'admin:catalog_product_changelist' %}">Товары</a><a href="{% url 'admin:catalog_inquiry_changelist' %}">Заявки</a><a href="{% url 'admin:catalog_partner_changelist' %}">Партнёры</a></div>{% endblock %}

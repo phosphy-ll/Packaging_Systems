@@ -1,6 +1,6 @@
-{% load static %}
+{% load static catalog_i18n %}
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="{{ site_lang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,8 +14,11 @@
 <body>
   <div class="topbar">
     <div class="container topbar-inner">
-      <span>Оборудование для розлива и упаковки пищевой продукции</span>
-      <span>Алматы, Казахстан <span class="separator">/</span> <a href="mailto:{{ company_email }}">{{ company_email }}</a></span>
+      <span>{% tr "Оборудование для розлива и упаковки пищевой продукции" %}</span>
+      <span>{% tr "Алматы, Казахстан" %} <span class="separator">/</span> <a href="mailto:{{ company_email }}">{{ company_email }}</a></span>
+    <div class="language-switch" aria-label="Language">
+        {% for code, label in site_languages.items %}<a href="?lang={{ code }}" class="{% if site_lang == code %}active{% endif %}" lang="{{ code }}" title="{{ label|t:site_lang }}">{% if code == "kk" %}KZ{% elif code == "en" %}EN{% elif code == "it" %}IT{% else %}RU{% endif %}</a>{% endfor %}
+      </div>
     </div>
   </div>
   <header class="site-header">
@@ -24,29 +27,31 @@
         <img src="{% static 'catalog/brand-logo.webp' %}" alt="Packaging Systems" width="180" height="142">
       </a>
       <nav class="nav-main" aria-label="Основная навигация">
-        <a href="{% url 'catalog:home' %}">Главная</a>
+        <a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a>
         <div class="nav-dropdown">
-          <a href="{% url 'catalog:page' 'filling-lines' %}">Направления <span aria-hidden="true">⌄</span></a>
+          <a href="{% url 'catalog:page' 'filling-lines' %}">{% tr "Направления" %} <span aria-hidden="true">⌄</span></a>
           <div class="dropdown-panel">
             {% for label, slug in nav_sections %}
-              <a href="{% url 'catalog:page' slug %}">{{ label }}</a>
+              <a href="{% url 'catalog:page' slug %}">{{ label|t:site_lang }}</a>
             {% endfor %}
           </div>
         </div>
-        <a href="{% url 'catalog:product_list' %}">Сейчас в продаже</a>
-        <a href="{% url 'catalog:page' 'service' %}">Сервис</a>
-        <a href="{% url 'catalog:contact' %}">Контакты</a>
+        <a href="{% url 'catalog:product_list' %}">{% tr "Сейчас в продаже" %}</a>
+        <a href="{% url 'catalog:page' 'service' %}">{% tr "Сервис" %}</a>
+        <a href="{% url 'catalog:partners' %}">{% tr "Наши партнеры" %}</a>
+        <a href="{% url 'catalog:contact' %}">{% tr "Контакты" %}</a>
       </nav>
-      <a class="button button-primary header-cta" href="{% url 'catalog:contact' %}">Оставить запрос <span aria-hidden="true">↗</span></a>
+      <a class="button button-primary header-cta" href="{% url 'catalog:contact' %}">{% tr "Оставить запрос" %} <span aria-hidden="true">↗</span></a>
       <details class="mobile-menu">
-        <summary>Меню <span aria-hidden="true">☰</span></summary>
+        <summary>{% tr "Меню" %} <span aria-hidden="true">☰</span></summary>
         <nav aria-label="Мобильное меню">
-          <a href="{% url 'catalog:home' %}">Главная</a>
-          <a href="{% url 'catalog:product_list' %}">Сейчас в продаже</a>
+          <a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a>
+          <a href="{% url 'catalog:product_list' %}">{% tr "Сейчас в продаже" %}</a>
           {% for label, slug in nav_sections %}
-            <a href="{% url 'catalog:page' slug %}">{{ label }}</a>
+            <a href="{% url 'catalog:page' slug %}">{{ label|t:site_lang }}</a>
           {% endfor %}
-          <a href="{% url 'catalog:contact' %}">Контакты и обратная связь</a>
+          <a href="{% url 'catalog:partners' %}">{% tr "Наши партнеры" %}</a>
+          <a href="{% url 'catalog:contact' %}">{% tr "Контакты и обратная связь" %}</a>
         </nav>
       </details>
     </div>
@@ -58,28 +63,29 @@
     <div class="container footer-grid">
       <div>
         <a class="footer-wordmark" href="{% url 'catalog:home' %}"><span>PS</span> Packaging Systems</a>
-        <p>Оборудование для розлива и упаковки, запасные части и сервис.</p>
-        <p class="footer-location">Алматы, Казахстан</p>
+        <p>{% tr "Оборудование для розлива и упаковки, запасные части и сервис." %}</p>
+        <p class="footer-location">{% tr "Алматы, Казахстан" %}</p>
       </div>
       <div>
-        <h3>Направления</h3>
-        <a href="{% url 'catalog:page' 'filling-lines' %}">Комплектные линии розлива</a>
-        <a href="{% url 'catalog:page' 'equipment-units' %}">Узлы и оборудование</a>
-        <a href="{% url 'catalog:page' 'used-lines' %}">Бывшие в употреблении линии</a>
-        <a href="{% url 'catalog:page' 'spare-parts' %}">Запасные части</a>
+        <h3>{% tr "Направления" %}</h3>
+        <a href="{% url 'catalog:page' 'filling-lines' %}">{% tr "Комплектные линии розлива" %}</a>
+        <a href="{% url 'catalog:page' 'equipment-units' %}">{% tr "Узлы и оборудование" %}</a>
+        <a href="{% url 'catalog:page' 'used-lines' %}">{% tr "Бывшие в употреблении линии" %}</a>
+        <a href="{% url 'catalog:page' 'spare-parts' %}">{% tr "Запасные части" %}</a>
+        <a href="{% url 'catalog:partners' %}">{% tr "Наши партнеры" %}</a>
       </div>
       <div>
-        <h3>Информация</h3>
-        <a href="{% url 'catalog:product_list' %}">Сейчас в продаже</a>
-        <a href="{% url 'catalog:page' 'service' %}">Сервис</a>
-        <a href="{% url 'catalog:contact' %}">Обратная связь</a>
-        <a href="{% url 'catalog:privacy' %}">Персональные данные</a>
+        <h3>{% tr "Информация" %}</h3>
+        <a href="{% url 'catalog:product_list' %}">{% tr "Сейчас в продаже" %}</a>
+        <a href="{% url 'catalog:page' 'service' %}">{% tr "Сервис" %}</a>
+        <a href="{% url 'catalog:contact' %}">{% tr "Обратная связь" %}</a>
+        <a href="{% url 'catalog:privacy' %}">{% tr "Персональные данные" %}</a>
       </div>
       <div class="footer-contact">
-        <h3>Связаться с нами</h3>
+        <h3>{% tr "Связаться с нами" %}</h3>
         <a class="footer-email" href="mailto:{{ company_email }}">{{ company_email }}</a>
-        <p>Отправьте запрос, чтобы обсудить подбор оборудования или поставку запчастей.</p>
-        <a class="text-link light" href="{% url 'catalog:contact' %}">Написать нам <span aria-hidden="true">↗</span></a>
+        <p>{% tr "Отправьте запрос, чтобы обсудить подбор оборудования или поставку запчастей." %}</p>
+        <a class="text-link light" href="{% url 'catalog:contact' %}">{% tr "Написать нам" %} <span aria-hidden="true">↗</span></a>
       </div>
     </div>
     <div class="container footer-bottom"><span>© {% now "Y" %} Packaging Systems</span><span>Flexibility and knowledge</span></div>

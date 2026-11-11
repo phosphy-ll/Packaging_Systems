@@ -161,6 +161,8 @@ class Command(BaseCommand):
                 ("Условия", "EXW Incoterms 2020, Казахстан"),
             ]):
                 ProductSpecification.objects.create(product=product, name=name, value=value, sort_order=order)
+        from catalog.seed_extra import upgrade_seed
+        upgrade_seed()
         self.stdout.write(self.style.SUCCESS(
-            "Разделы созданы при отсутствии. Черновик линии проверяйте перед публикацией."
+            "Разделы, партнёры, переводы и тестовая линия загружены. Уточните технические данные и цену."
         ))
