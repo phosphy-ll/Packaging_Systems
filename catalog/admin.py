@@ -43,10 +43,10 @@ class ProductDocumentInline(admin.TabularInline):
 class ProductTranslationInline(admin.StackedInline):
     model = ProductTranslation
     extra = 0
-    max_num = 3
+    max_num = 2
     fields = ("language", "title", "summary", "description")
     verbose_name = "Перевод товара"
-    verbose_name_plural = "Переводы товара: қазақша / English / italiano"
+    verbose_name_plural = "Переводы товара: қазақша / English"
 
 
 @admin.register(Product)
@@ -75,7 +75,7 @@ class ProductAdmin(admin.ModelAdmin):
 class PageTranslationInline(admin.StackedInline):
     model = PageTranslation
     extra = 0
-    max_num = 3
+    max_num = 2
     verbose_name_plural = "Переводы страницы"
 
 
@@ -90,15 +90,15 @@ class PageAdmin(admin.ModelAdmin):
 
 @admin.register(Inquiry)
 class InquiryAdmin(admin.ModelAdmin):
-    list_display = ("name", "email", "product", "created_at", "email_sent", "processed")
+    list_display = ("name", "subject", "email", "product", "created_at", "email_sent", "processed")
     list_filter = ("processed", "email_sent", "created_at")
-    search_fields = ("name", "email", "company", "message")
+    search_fields = ("name", "subject", "email", "company", "message")
     readonly_fields = (
-        "name", "email", "phone", "company", "message", "product",
+        "name", "subject", "email", "phone", "company", "message", "product",
         "created_at", "consent_at", "email_sent",
     )
     fields = (
-        "name", "email", "phone", "company", "message", "product",
+        "name", "subject", "email", "phone", "company", "message", "product",
         "created_at", "consent_at", "email_sent", "processed", "admin_note",
     )
     actions = ("mark_processed",)

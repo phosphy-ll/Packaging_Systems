@@ -12,8 +12,27 @@ from django.views.decorators.http import require_http_methods
 
 from .forms import InquiryForm
 from .models import Category, Page, Product, Partner
+from .i18n import translate
 
 logger = logging.getLogger(__name__)
+
+
+def site_title(request, label):
+    """Browser tab title follows the selected language."""
+    return f"{translate(label, getattr(request, 'site_lang', 'ru'))} | Packaging Systems"
+
+
+def model_title(obj, request):
+    """Use the editable translated title, or the original as fallback."""
+    lang = getattr(request, "site_lang", "ru")
+    if lang != "ru":
+        translated = next(
+            (t for t in obj.translations.all() if t.language == lang), None
+        )
+        if translated and translated.title:
+            return translated.title
+    return obj.title
+
 
 
 def visible_products():
@@ -26,7 +45,7 @@ def visible_products():
 
 
 def home(request):
-    home_page = Page.objects.filter(slug="home", is_published=True).first()
+    home_page = Page.objects.filter(slug="home", is_published=True).prefetch_related("translations").first()
     featured = list(
         visible_products().filter(featured=True).exclude(
             availability=Product.Availability.SOLD
@@ -44,7 +63,7 @@ def home(request):
         "featured": featured,
         "categories": Category.objects.filter(is_active=True)[:5],
         "partners": Partner.objects.filter(is_active=True),
-        "page_title": "Packaging Systems | Оборудование для розлива",
+        "page_title": site_title(request, "Главная"),
     })
 
 
@@ -79,7 +98,7 @@ def product_list(request):
         "selected_condition": condition,
         "selected_sort": sort,
         "search_params": params.urlencode(),
-        "page_title": "Сейчас в продаже | Packaging Systems",
+        "page_title": site_title(request, "Сейчас в продаже"),
     })
 
 
@@ -90,14 +109,14 @@ def product_detail(request, slug):
     )
     return render(request, "catalog/product_detail.html", {
         "product": product,
-        "page_title": f"{product.title} | Packaging Systems",
+        "page_title": f"{model_title(product, request)} | Packaging Systems",
     })
 
 
 def info_page(request, slug):
     page = get_object_or_404(Page.objects.prefetch_related("translations"), slug=slug, is_published=True)
     return render(request, "catalog/info_page.html", {
-        "page": page, "page_title": f"{page.title} | Packaging Systems",
+        "page": page, "page_title": f"{model_title(page, request)} | Packaging Systems",
     })
 
 
@@ -113,6 +132,7 @@ def contact(request):
         inquiry = form.save()
         product_title = inquiry.product.title if inquiry.product else "Без привязки к товару"
         body = (
+            f"Тема обращения: {inquiry.subject}\n"
             f"Новая заявка с сайта Packaging Systems\n\n"
             f"Имя: {inquiry.name}\n"
             f"Email: {inquiry.email}\n"
@@ -139,19 +159,19 @@ def contact(request):
         return redirect("catalog:thanks")
     return render(request, "catalog/contact.html", {
         "form": form,
-        "page_title": "Обратная связь | Packaging Systems",
+        "page_title": site_title(request, "Обратная связь"),
     })
 
 
 def thanks(request):
     return render(request, "catalog/thanks.html", {
-        "page_title": "Заявка получена | Packaging Systems",
+        "page_title": site_title(request, "Запрос получен"),
     })
 
 
 def privacy(request):
     return render(request, "catalog/privacy.html", {
-        "page_title": "Обработка персональных данных | Packaging Systems",
+        "page_title": site_title(request, "Обработка персональных данных"),
     })
 
 
@@ -167,12 +187,12 @@ def preview_product(request, pk):
     return render(request, "catalog/product_detail.html", {
         "product": product,
         "preview_mode": True,
-        "page_title": f"Предпросмотр: {product.title} | Packaging Systems",
+        "page_title": f"{translate('Предпросмотр', getattr(request, 'site_lang', 'ru'))}: {model_title(product, request)} | Packaging Systems",
     })
 
 
 def partners(request):
     return render(request, "catalog/partners.html", {
         "partners": Partner.objects.filter(is_active=True),
-        "page_title": "Наши партнеры | Packaging Systems",
+        "page_title": site_title(request, "Наши партнеры"),
     })

@@ -12,7 +12,7 @@
 <section class="section section-catalog">
   <div class="container">
     <form class="filters" method="get" action="{% url 'catalog:product_list' %}">
-      <label class="filter-search"><span>{% tr "Поиск по каталогу" %}</span><input type="search" name="q" value="{{ query }}" placeholder="Название, производитель, модель..."></label>
+      <label class="filter-search"><span>{% tr "Поиск по каталогу" %}</span><input type="search" name="q" value="{{ query }}" placeholder="{% tr 'Название, производитель, модель...' %}"></label>
       <label><span>{% tr "Категория" %}</span><select name="category"><option value="">{% tr "Все категории" %}</option>{% for category in categories %}<option value="{{ category.slug }}" {% if selected_category == category.slug %}selected{% endif %}>{{ category.name|t:site_lang }}</option>{% endfor %}</select></label>
       <label><span>{% tr "Состояние" %}</span><select name="condition"><option value="">{% tr "Любое" %}</option><option value="new" {% if selected_condition == 'new' %}selected{% endif %}>{% tr "Новое" %}</option><option value="used" {% if selected_condition == 'used' %}selected{% endif %}>{% tr "Б/У" %}</option><option value="spare" {% if selected_condition == 'spare' %}selected{% endif %}>{% tr "Запасная часть" %}</option></select></label>
       <label><span>{% tr "Сортировка" %}</span><select name="sort"><option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>{% tr "Сначала новые" %}</option><option value="price_low" {% if selected_sort == 'price_low' %}selected{% endif %}>{% tr "Цена: по возрастанию" %}</option><option value="price_high" {% if selected_sort == 'price_high' %}selected{% endif %}>{% tr "Цена: по убыванию" %}</option></select></label>

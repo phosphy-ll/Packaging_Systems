@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#111b23">
   <meta name="description" content="Packaging Systems: линии розлива, упаковочное оборудование, запасные части и технический сервис в Казахстане.">
   <title>{{ page_title|default:"Packaging Systems" }}</title>
-  <link rel="icon" type="image/svg+xml" href="{% static 'catalog/favicon.svg' %}">
+  <link rel="icon" type="image/png" href="{% static 'catalog/favicon.png' %}?v=3">
   <link rel="stylesheet" href="{% static 'catalog/site.css' %}">
   <script defer src="{% static 'catalog/site.js' %}"></script>
 </head>
@@ -17,7 +17,7 @@
       <span>{% tr "Оборудование для розлива и упаковки пищевой продукции" %}</span>
       <span>{% tr "Алматы, Казахстан" %} <span class="separator">/</span> <a href="mailto:{{ company_email }}">{{ company_email }}</a></span>
     <div class="language-switch" aria-label="Language">
-        {% for code, label in site_languages.items %}<a href="?lang={{ code }}" class="{% if site_lang == code %}active{% endif %}" lang="{{ code }}" title="{{ label|t:site_lang }}">{% if code == "kk" %}KZ{% elif code == "en" %}EN{% elif code == "it" %}IT{% else %}RU{% endif %}</a>{% endfor %}
+        {% for code, label in site_languages.items %}<a href="?lang={{ code }}" class="{% if site_lang == code %}active{% endif %}" lang="{{ code }}" title="{{ label|t:site_lang }}">{% if code == "kk" %}KZ{% elif code == "en" %}EN{% else %}RU{% endif %}</a>{% endfor %}
       </div>
     </div>
   </div>

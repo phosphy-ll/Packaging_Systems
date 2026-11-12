@@ -44,12 +44,14 @@ class CatalogTests(TestCase):
     def test_contact_saves_and_sends_email(self):
         response = self.client.post(reverse("catalog:contact"), {
             "name": "Тест", "email": "test@example.com", "phone": "+77770000000",
-            "company": "Test Co", "message": "Прошу информацию",
+            "company": "Test Co", "subject": "Поставка линии", "message": "Прошу информацию",
             "product": str(self.published.pk), "consent": "on", "website": "",
         })
         self.assertRedirects(response, reverse("catalog:thanks"))
         inquiry = Inquiry.objects.get()
         self.assertEqual(inquiry.product, self.published)
+        self.assertEqual(inquiry.subject, "Поставка линии")
+        self.assertIn("Поставка линии", mail.outbox[0].body)
         self.assertTrue(inquiry.email_sent)
         self.assertEqual(len(mail.outbox), 1)
 
@@ -87,12 +89,12 @@ class UpgradeTests(TestCase):
 
     def test_four_languages_switch_and_session(self):
         url=reverse("catalog:home")
-        for lang in ("ru", "kk", "en", "it"):
+        for lang in ("ru", "kk", "en"):
             response=self.client.get(url, {"lang":lang})
             self.assertEqual(response.status_code,200)
             self.assertContains(response, f'lang="{lang}"')
         response=self.client.get(url)
-        self.assertContains(response, "Impianti di")
+        self.assertContains(response, "Filling and")
 
     def test_partner_page(self):
         response=self.client.get(reverse("catalog:partners"))
@@ -115,6 +117,50 @@ class UpgradeTests(TestCase):
 
     def test_translations_exist_for_seeded_products_and_pages(self):
         from .models import PageTranslation, ProductTranslation, Partner
-        self.assertEqual(PageTranslation.objects.filter(page__slug="service").count(),3)
-        self.assertEqual(ProductTranslation.objects.filter(product__title="Линия розлива Bertolaso 40.40.6").count(),3)
+        self.assertEqual(PageTranslation.objects.filter(page__slug="service").count(),2)
+        self.assertEqual(ProductTranslation.objects.filter(product__title="Линия розлива Bertolaso 40.40.6").count(),2)
         self.assertGreaterEqual(Partner.objects.count(),16)
+
+
+class LocalizationAndSubjectTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_content")
+
+    def test_home_heading_is_fully_translated(self):
+        response = self.client.get(reverse("catalog:home"), {"lang": "kk"})
+        self.assertContains(response, "Қызмет <span>бағыттары</span>")
+        self.assertNotContains(response, "Бағыттар <span>работы</span>")
+        self.assertContains(response, "<title>Басты бет | Packaging Systems</title>", html=True)
+        self.assertNotContains(response, ">IT</a>")
+
+    def test_english_filling_and_catalog_strings(self):
+        filling = self.client.get(reverse("catalog:page", kwargs={"slug": "filling-lines"}), {"lang": "en"})
+        self.assertContains(filling, "Manufacturer of complete lines and equipment:")
+        self.assertNotContains(filling, "Производитель комплектных линий и оборудования:")
+        listing = self.client.get(reverse("catalog:product_list"))
+        self.assertContains(listing, "Name, manufacturer, model...")
+        self.assertContains(listing, "<title>Available now | Packaging Systems</title>", html=True)
+
+    def test_privacy_title_and_language_selection(self):
+        for lang, label in (("ru", "Обработка персональных данных"),
+                            ("kk", "Дербес деректерді өңдеу"),
+                            ("en", "Personal data processing")):
+            response = self.client.get(reverse("catalog:privacy"), {"lang": lang})
+            self.assertContains(response, "<h1>"+label+"</h1>", html=True)
+            self.assertContains(response, "<title>"+label+" | Packaging Systems</title>", html=True)
+            self.assertNotContains(response, ">IT</a>")
+        self.client.get(reverse("catalog:home"), {"lang": "it"})
+        self.assertEqual(self.client.session["site_lang"], "en")
+
+    def test_subject_required_in_contact_form(self):
+        for lang in ("ru", "kk", "en"):
+            response = self.client.get(reverse("catalog:contact"), {"lang":lang})
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, 'name="subject"')
+        response = self.client.post(reverse("catalog:contact"), {
+            "name":"Example", "email":"person@example.com",
+            "message":"Details", "consent":"on",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Inquiry.objects.count(), 0)
