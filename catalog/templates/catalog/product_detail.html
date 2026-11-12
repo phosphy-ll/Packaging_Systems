@@ -3,7 +3,7 @@
 {% block content %}
 <section class="product-detail-section">
   <div class="container">
-    <div class="breadcrumbs breadcrumbs-light"><a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a><span>/</span><a href="{% url 'catalog:product_list' %}">{% tr "Сейчас в продаже" %}</a><span>/</span>{{ product.title|truncatechars:56 }}</div>
+    <div class="breadcrumbs breadcrumbs-light"><a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a><span>/</span><a href="{% url 'catalog:product_list' %}">{% tr "Сейчас в продаже" %}</a><span>/</span>{{ product|localized:"title"|truncatechars:56 }}</div>
     {% if preview_mode %}<div class="preview-banner">{% tr "Предпросмотр товара" %}: {% tr "Этот товар не опубликован. Страница доступна только сотрудникам." %}</div>{% endif %}<div class="detail-grid">
       <div class="detail-media">
         {% with cover=product.cover_image %}
@@ -27,7 +27,7 @@
         {% endif %}
       </div>
       <div class="detail-content">
-        <div class="eyebrow"><span class="eyebrow-line"></span> {{ product.category.name|t:site_lang|upper }}</div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> {{ product.category|localized:"name"|upper }}</div>
         <h1>{{ product|localized:"title" }}</h1>
         <div class="detail-badges"><span>{{ product.get_condition_display|t:site_lang }}</span><span>{{ product.get_availability_display|t:site_lang }}</span></div>
         {% if product.summary %}<p class="detail-summary">{{ product|localized:"summary" }}</p>{% endif %}
@@ -57,7 +57,7 @@
         <div class="detail-specs">
           {% if product.specifications.exists %}
             <h2>{% tr "Характеристики" %}</h2>
-            <dl>{% for spec in product.specifications.all %}<div><dt>{{ spec.name }}</dt><dd>{{ spec.value }}</dd></div>{% endfor %}</dl>
+            <dl>{% for spec in product.specifications.all %}<div><dt>{{ spec|localized:"name" }}</dt><dd>{{ spec|localized:"value" }}</dd></div>{% endfor %}</dl>
           {% endif %}
           {% if product.documents.exists %}
             <h2>{% tr "Документы" %}</h2>

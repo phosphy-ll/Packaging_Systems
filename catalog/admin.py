@@ -12,6 +12,14 @@ class CategoryAdmin(admin.ModelAdmin):
     list_editable = ("is_active", "sort_order")
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
+    fieldsets = (
+        ("Категория и публикация", {"fields": ("name", "slug", "is_active", "sort_order")}),
+        ("Переводы названия", {
+            "description": "Заполните KZ и EN. Если перевод пустой, на сайте отображается RU.",
+            "fields": ("name_kk", "name_en"),
+        }),
+        ("Описание категории", {"fields": ("description",)}),
+    )
 
 
 class ProductImageInline(admin.TabularInline):
@@ -30,9 +38,22 @@ class ProductImageInline(admin.TabularInline):
     preview.short_description = "Просмотр"
 
 
-class ProductSpecificationInline(admin.TabularInline):
+class ProductSpecificationInline(admin.StackedInline):
     model = ProductSpecification
-    extra = 2
+    extra = 1
+    verbose_name = "Характеристика оборудования"
+    verbose_name_plural = "Характеристики: названия и значения на RU / KZ / EN"
+    fieldsets = (
+        (None, {
+            "description": "RU обязателен; поля KZ и EN необязательны. Пустой перевод = русский текст.",
+            "fields": (
+                ("name", "value"),
+                ("name_kk", "value_kk"),
+                ("name_en", "value_en"),
+                "sort_order",
+            ),
+        }),
+    )
 
 
 class ProductDocumentInline(admin.TabularInline):
