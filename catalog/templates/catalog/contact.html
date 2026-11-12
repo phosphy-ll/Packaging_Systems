@@ -32,6 +32,7 @@
           <label>{% tr "Телефон" %}{{ form.phone }}{{ form.phone.errors }}</label>
           <label>{% tr "Компания" %}{{ form.company }}{{ form.company.errors }}</label>
         </div>
+        <label>{% tr "Тема обращения" %} *{{ form.subject }}{{ form.subject.errors }}</label>
         <label>{% tr "Сообщение" %} *{{ form.message }}{{ form.message.errors }}</label>
         {% if form.initial.product %}<div class="form-info">{% tr "К обращению прикреплено выбранное оборудование." %}</div>{% endif %}
         <label class="checkbox-field">{{ form.consent }} <span><a href="{% url 'catalog:privacy' %}" target="_blank" rel="noopener">{% tr "Согласен(на) на обработку персональных данных для ответа на мой запрос." %}</a> *</span></label>

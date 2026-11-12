@@ -88,7 +88,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = "ru"
-LANGUAGES = [("ru", "Русский"), ("kk", "Қазақша"), ("en", "English"), ("it", "Italiano")]
+LANGUAGES = [("ru", "Русский"), ("kk", "Қазақша"), ("en", "English")]
 TIME_ZONE = "Asia/Almaty"
 USE_I18N = True
 USE_TZ = True

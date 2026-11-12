@@ -208,6 +208,7 @@ class Page(models.Model):
 class Inquiry(models.Model):
     name = models.CharField("Имя", max_length=150)
     email = models.EmailField("Email")
+    subject = models.CharField("Тема обращения", max_length=180, blank=True, default="")
     phone = models.CharField("Телефон", max_length=60, blank=True)
     company = models.CharField("Компания", max_length=180, blank=True)
     message = models.TextField("Сообщение")
@@ -232,7 +233,7 @@ class Inquiry(models.Model):
 
 class PageTranslation(models.Model):
     language = models.CharField(
-        "Язык", choices=[("kk", "Қазақша"), ("en", "English"), ("it", "Italiano")],
+        "Язык", choices=[("kk", "Қазақша"), ("en", "English")],
         max_length=2,
     )
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="translations")
@@ -251,7 +252,7 @@ class PageTranslation(models.Model):
 
 class ProductTranslation(models.Model):
     language = models.CharField(
-        "Язык", choices=[("kk", "Қазақша"), ("en", "English"), ("it", "Italiano")],
+        "Язык", choices=[("kk", "Қазақша"), ("en", "English")],
         max_length=2,
     )
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="translations")

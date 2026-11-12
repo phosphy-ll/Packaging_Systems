@@ -1,7 +1,7 @@
 {% extends "catalog/base.html" %}
 {% load catalog_i18n %}
 {% block content %}
-<section class="page-hero page-hero-dark"><div class="container"><div class="breadcrumbs"><a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a><span>/</span> {% tr "Персональные данные" %}</div><h1>Обработка персональных данных</h1></div></section>
+<section class="page-hero page-hero-dark"><div class="container"><div class="breadcrumbs"><a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a><span>/</span> {% tr "Персональные данные" %}</div><h1>{% tr "Обработка персональных данных" %}</h1></div></section>
 <section class="section"><div class="container narrow-content rich-text">
 {% if site_lang == "kk" %}
 <p>Форманы жіберген кезде Packaging Systems сіз көрсеткен аты-жөніңізді, email мекенжайыңызды, міндетті емес телефон және компания деректерін, хабарламаңызды және қызықтыратын жабдық туралы мәліметтерді алады.</p>
@@ -13,11 +13,6 @@
 <p>We use the data to receive and process your inquiry and prepare a response. Inquiries are saved in a restricted administration system. If email delivery is configured, a copy is sent to <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
 <p>To request access, correction or deletion of your submitted data, email <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
 <p>Before the public launch, the site owner must approve a final personal data processing and retention policy in accordance with applicable law.</p>
-{% elif site_lang == "it" %}
-<p>Inviando il modulo, Packaging Systems riceve nome, email, eventuale numero di telefono e azienda, il messaggio e i dettagli delle attrezzature indicate.</p>
-<p>Utilizziamo i dati per ricevere e gestire la richiesta e preparare una risposta. Le richieste vengono conservate in un sistema amministrativo riservato. Se la posta è configurata, una copia viene inviata a <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
-<p>Per richiedere accesso, rettifica o cancellazione dei dati, scrivi a <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
-<p>Prima del lancio pubblico, il proprietario del sito dovrà approvare l'informativa definitiva sul trattamento e la conservazione dei dati secondo la legge applicabile.</p>
 {% else %}
   <p>При отправке формы Packaging Systems получает указанные вами имя, email, необязательные телефон и компанию, текст сообщения и сведения об интересующем оборудовании.</p>
   <p>Данные используются для получения и обработки запроса, обратной связи и подготовки предложения. Обращение сохраняется в закрытой административной системе. При наличии почтовой настройки копия отправляется на адрес <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>

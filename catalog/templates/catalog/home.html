@@ -5,7 +5,7 @@
   <div class="container hero-grid">
     <div class="hero-copy">
       <div class="eyebrow"><span class="eyebrow-line"></span> {% tr "ПРОМЫШЛЕННЫЕ РЕШЕНИЯ С 2014 ГОДА" %}</div>
-      <h1>{% if site_lang == "ru" %}Оборудование для <em>розлива</em> и упаковки{% elif site_lang == "kk" %}Құю және <em>орау</em> жабдықтары{% elif site_lang == "en" %}Filling and <em>packaging</em> equipment{% else %}Impianti di <em>imbottigliamento</em> e confezionamento{% endif %}</h1>
+      <h1>{% if site_lang == "ru" %}Оборудование для <em>розлива</em> и упаковки{% elif site_lang == "kk" %}Құю және <em>орау</em> жабдықтары{% elif site_lang == "en" %}Filling and <em>packaging</em> equipment{% endif %}</h1>
       <p class="hero-lead">{% tr "Комплектные линии, отдельные узлы, запасные части и техническое сопровождение производств напитков и пищевой продукции." %}</p>
       <div class="hero-actions">
         <a class="button button-primary button-large" href="{% url 'catalog:product_list' %}">{% tr "Смотреть оборудование" %} <span aria-hidden="true">↗</span></a>
@@ -59,7 +59,7 @@
 
 <section class="intro-band">
   <div class="container intro-band-grid">
-    <span class="section-index">/ 01 О КОМПАНИИ</span>
+    <span class="section-index">/ 01 {% tr "О КОМПАНИИ" %}</span>
     <p>{% if home_page and home_page.lead %}{{ home_page|localized:"lead" }}{% else %}Группа компаний Packaging Systems с 2014 года представляет в Казахстане и Евразийском экономическом пространстве оборудование для розлива и упаковки напитков и пищевой продукции.{% endif %}</p>
     <a href="{% url 'catalog:contact' %}" class="round-arrow" aria-label="Написать нам">↗</a>
   </div>
@@ -68,16 +68,16 @@
 <section class="section">
   <div class="container">
     <div class="section-heading">
-      <div><div class="eyebrow"><span class="eyebrow-line"></span> {% tr "ЧТО МЫ ПРЕДЛАГАЕМ" %}</div><h2>{% tr "Направления" %} <span>работы</span></h2></div>
+      <div><div class="eyebrow"><span class="eyebrow-line"></span> {% tr "ЧТО МЫ ПРЕДЛАГАЕМ" %}</div><h2>{% if site_lang == "kk" %}Қызмет <span>бағыттары</span>{% elif site_lang == "en" %}Our <span>solutions</span>{% else %}Направления <span>работы</span>{% endif %}</h2></div>
       <p>{% tr "Оборудование и технические решения для линий розлива, упаковки и модернизации производства." %}</p>
     </div>
     <div class="directions-grid">
-      <a class="direction-card direction-accent" href="{% url 'catalog:page' 'filling-lines' %}"><span class="card-number">01 / ОБОРУДОВАНИЕ</span><h3>{% tr "Комплектные линии розлива" %}</h3><p>{% tr "Для разных жидкостей и видов тары." %}</p><span class="card-arrow">↗</span></a>
-      <a class="direction-card" href="{% url 'catalog:page' 'equipment-units' %}"><span class="card-number">02 / УЗЛЫ</span><h3>{% tr "Машины и оборудование" %}</h3><p>{% tr "Выдув, розлив, этикетирование, упаковка и контроль качества." %}</p><span class="card-arrow">↗</span></a>
-      <a class="direction-card" href="{% url 'catalog:page' 'water-treatment' %}"><span class="card-number">03 / СИСТЕМЫ</span><h3>{% tr "Водоподготовка" %}</h3><p>{% tr "Запросите информацию о подборе систем." %}</p><span class="card-arrow">↗</span></a>
-      <a class="direction-card" href="{% url 'catalog:page' 'used-lines' %}"><span class="card-number">04 / Б/У ЛИНИИ</span><h3>{% tr "Оборудование после ревизии" %}</h3><p>{% tr "Линии европейского производства с техническим сопровождением." %}</p><span class="card-arrow">↗</span></a>
-      <a class="direction-card" href="{% url 'catalog:page' 'spare-parts' %}"><span class="card-number">05 / КОМПЛЕКТУЮЩИЕ</span><h3>{% tr "Запасные части" %}</h3><p>{% tr "Механические и электронные компоненты для оборудования." %}</p><span class="card-arrow">↗</span></a>
-      <a class="direction-card" href="{% url 'catalog:page' 'service' %}"><span class="card-number">06 / ТЕХНИЧЕСКАЯ ПОДДЕРЖКА</span><h3>{% tr "Сервис и модернизация" %}</h3><p>{% tr "Ревизия, ремонт, монтаж и повышение эффективности линий." %}</p><span class="card-arrow">↗</span></a>
+      <a class="direction-card direction-accent" href="{% url 'catalog:page' 'filling-lines' %}"><span class="card-number">01 / {% tr "ОБОРУДОВАНИЕ" %}</span><h3>{% tr "Комплектные линии розлива" %}</h3><p>{% tr "Для разных жидкостей и видов тары." %}</p><span class="card-arrow">↗</span></a>
+      <a class="direction-card" href="{% url 'catalog:page' 'equipment-units' %}"><span class="card-number">02 / {% tr "УЗЛЫ" %}</span><h3>{% tr "Машины и оборудование" %}</h3><p>{% tr "Выдув, розлив, этикетирование, упаковка и контроль качества." %}</p><span class="card-arrow">↗</span></a>
+      <a class="direction-card" href="{% url 'catalog:page' 'water-treatment' %}"><span class="card-number">03 / {% tr "СИСТЕМЫ" %}</span><h3>{% tr "Водоподготовка" %}</h3><p>{% tr "Запросите информацию о подборе систем." %}</p><span class="card-arrow">↗</span></a>
+      <a class="direction-card" href="{% url 'catalog:page' 'used-lines' %}"><span class="card-number">04 / {% tr "Б/У ЛИНИИ" %}</span><h3>{% tr "Оборудование после ревизии" %}</h3><p>{% tr "Линии европейского производства с техническим сопровождением." %}</p><span class="card-arrow">↗</span></a>
+      <a class="direction-card" href="{% url 'catalog:page' 'spare-parts' %}"><span class="card-number">05 / {% tr "КОМПЛЕКТУЮЩИЕ" %}</span><h3>{% tr "Запасные части" %}</h3><p>{% tr "Механические и электронные компоненты для оборудования." %}</p><span class="card-arrow">↗</span></a>
+      <a class="direction-card" href="{% url 'catalog:page' 'service' %}"><span class="card-number">06 / {% tr "ТЕХНИЧЕСКАЯ ПОДДЕРЖКА" %}</span><h3>{% tr "Сервис и модернизация" %}</h3><p>{% tr "Ревизия, ремонт, монтаж и повышение эффективности линий." %}</p><span class="card-arrow">↗</span></a>
     </div>
   </div>
 </section>

@@ -17,12 +17,13 @@ class InquiryForm(forms.ModelForm):
 
     class Meta:
         model = Inquiry
-        fields = ("name", "email", "phone", "company", "message", "product")
+        fields = ("name", "email", "phone", "company", "subject", "message", "product")
         widgets = {
             "name": forms.TextInput(attrs={"placeholder": "Ваше имя", "autocomplete": "name"}),
             "email": forms.EmailInput(attrs={"placeholder": "name@company.kz", "autocomplete": "email"}),
             "phone": forms.TextInput(attrs={"placeholder": "+7 ...", "autocomplete": "tel"}),
             "company": forms.TextInput(attrs={"placeholder": "Название компании"}),
+            "subject": forms.TextInput(attrs={"placeholder": "Укажите тему обращения", "maxlength": 180}),
             "message": forms.Textarea(attrs={"placeholder": "Какое оборудование вас интересует?", "rows": 6}),
         }
 
@@ -33,9 +34,10 @@ class InquiryForm(forms.ModelForm):
         self.fields["name"].required = True
         self.fields["email"].required = True
         self.fields["message"].required = True
+        self.fields["subject"].required = True
         for field_name, source in {
             "name": "Имя", "email": "Email", "phone": "Телефон",
-            "company": "Компания", "message": "Сообщение",
+            "company": "Компания", "subject": "Тема обращения", "message": "Сообщение",
             "consent": "Согласен(на) на обработку персональных данных для ответа на мой запрос.",
         }.items():
             self.fields[field_name].label = translate(source, lang)
@@ -43,12 +45,12 @@ class InquiryForm(forms.ModelForm):
             "ru": ("Ваше имя", "Название компании", "Какое оборудование вас интересует?"),
             "kk": ("Атыңыз", "Компания атауы", "Қандай жабдық қызықтырады?"),
             "en": ("Your name", "Company name", "What equipment are you interested in?"),
-            "it": ("Il tuo nome", "Nome azienda", "Quali attrezzature ti interessano?"),
         }
         name, company, message = placeholders.get(lang, placeholders["ru"])
         self.fields["name"].widget.attrs["placeholder"] = name
         self.fields["company"].widget.attrs["placeholder"] = company
         self.fields["message"].widget.attrs["placeholder"] = message
+        self.fields["subject"].widget.attrs["placeholder"] = translate("Укажите тему обращения", lang)
 
     def clean_website(self):
         value = self.cleaned_data.get("website")
