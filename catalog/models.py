@@ -42,7 +42,9 @@ def validate_upload_size(uploaded):
 
 
 class Category(models.Model):
-    name = models.CharField("Название", max_length=120)
+    name = models.CharField("Название (RU)", max_length=120)
+    name_kk = models.CharField("Название (KZ)", max_length=120, blank=True, default="")
+    name_en = models.CharField("Название (EN)", max_length=120, blank=True, default="")
     slug = models.SlugField("URL-имя", unique=True, max_length=180, blank=True)
     description = models.TextField("Описание", blank=True)
     sort_order = models.PositiveSmallIntegerField("Порядок", default=0)
@@ -149,8 +151,12 @@ class ProductImage(models.Model):
 
 class ProductSpecification(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="specifications", verbose_name="Товар")
-    name = models.CharField("Параметр", max_length=150)
-    value = models.CharField("Значение", max_length=300)
+    name = models.CharField("Параметр (RU)", max_length=150)
+    value = models.CharField("Значение (RU)", max_length=300)
+    name_kk = models.CharField("Параметр (KZ)", max_length=150, blank=True, default="")
+    value_kk = models.CharField("Значение (KZ)", max_length=300, blank=True, default="")
+    name_en = models.CharField("Параметр (EN)", max_length=150, blank=True, default="")
+    value_en = models.CharField("Значение (EN)", max_length=300, blank=True, default="")
     sort_order = models.PositiveSmallIntegerField("Порядок", default=0)
 
     class Meta:

@@ -163,6 +163,8 @@ class Command(BaseCommand):
                 ProductSpecification.objects.create(product=product, name=name, value=value, sort_order=order)
         from catalog.seed_extra import upgrade_seed
         upgrade_seed()
+        from catalog.seed_catalog_translations import seed_catalog_translations
+        seed_catalog_translations()
         self.stdout.write(self.style.SUCCESS(
             "Разделы, партнёры, переводы и тестовая линия загружены. Уточните технические данные и цену."
         ))

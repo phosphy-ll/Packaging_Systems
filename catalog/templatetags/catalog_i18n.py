@@ -11,12 +11,22 @@ def tr(context, value):
 
 @register.filter
 def localized(obj, field_name):
+    """Use admin-managed fields and fall back to the Russian original."""
     original = getattr(obj, field_name, "")
     lang = get_language()
-    if lang == "ru" or not hasattr(obj, "translations"):
+    if lang not in ("kk", "en"):
         return original
-    translation = next((x for x in obj.translations.all() if x.language == lang), None)
-    return getattr(translation, field_name, "") or original
+    translated_field = f"{field_name}_{lang}"
+    if hasattr(obj, translated_field):
+        return getattr(obj, translated_field) or original
+    if hasattr(obj, "translations"):
+        translated = next(
+            (item for item in obj.translations.all() if item.language == lang),
+            None,
+        )
+        if translated:
+            return getattr(translated, field_name, "") or original
+    return original
 
 @register.filter
 def t(value, lang):

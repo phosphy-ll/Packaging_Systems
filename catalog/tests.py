@@ -164,3 +164,79 @@ class LocalizationAndSubjectTests(TestCase):
         })
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Inquiry.objects.count(), 0)
+
+
+class SpecificationTranslationTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_content")
+
+    def test_catalog_category_and_specifications_are_translated_to_english(self):
+        item = Product.objects.get(slug="liniya-rozliva-bertolaso-40-40-6")
+        listing = self.client.get(reverse("catalog:product_list"), {"lang": "en"})
+        self.assertContains(listing, "Used lines")
+        detail = self.client.get(item.get_absolute_url())
+        self.assertContains(detail, "Overall capacity (per presentation)")
+        self.assertContains(detail, "8,000 bottles/hour")
+        self.assertContains(detail, "Rinsing/filling/capping triblock")
+        self.assertContains(detail, "Case packer")
+        self.assertNotContains(detail, "Укладчик коробов")
+        self.assertNotContains(detail, "Требует проверки")
+
+    def test_kazakh_category_and_specifications(self):
+        item = Product.objects.get(slug="liniya-rozliva-bertolaso-40-40-6")
+        listing = self.client.get(reverse("catalog:product_list"), {"lang": "kk"})
+        self.assertContains(listing, "Қолданылған желілер")
+        detail = self.client.get(item.get_absolute_url())
+        self.assertContains(detail, "Жалпы өнімділік (презентация бойынша)")
+        self.assertContains(detail, "8 000 бөтелке/сағ")
+        self.assertContains(detail, "Қорапқа салу машинасы")
+        self.assertNotContains(detail, "Коробоформовщик")
+
+    def test_missing_translation_falls_back_to_original(self):
+        from .models import ProductSpecification
+        item = Product.objects.get(slug="liniya-rozliva-bertolaso-40-40-6")
+        ProductSpecification.objects.create(
+            product=item,
+            name="Оригинальный параметр",
+            value="Оригинальное значение",
+        )
+        response = self.client.get(item.get_absolute_url(), {"lang": "en"})
+        self.assertContains(response, "Оригинальный параметр")
+        self.assertContains(response, "Оригинальное значение")
+
+    def test_seed_does_not_overwrite_manual_admin_translations(self):
+        from .models import Category, ProductSpecification
+        cat = Category.objects.get(slug="used-lines")
+        cat.name_en = "Custom category"
+        cat.save(update_fields=["name_en"])
+        item = Product.objects.get(slug="liniya-rozliva-bertolaso-40-40-6")
+        spec = ProductSpecification.objects.get(product=item, name="Триблок")
+        spec.name_en = "Custom title"
+        spec.value_en = "Custom value"
+        spec.save(update_fields=["name_en", "value_en"])
+        call_command("seed_content")
+        cat.refresh_from_db()
+        spec.refresh_from_db()
+        self.assertEqual(cat.name_en, "Custom category")
+        self.assertEqual(spec.name_en, "Custom title")
+        self.assertEqual(spec.value_en, "Custom value")
+        self.assertEqual(spec.name, "Триблок")
+
+    def test_admin_exposes_all_language_fields_for_category_and_specs(self):
+        from django.contrib.auth import get_user_model
+        from .models import Category
+        admin = get_user_model().objects.create_superuser(
+            username="lang-editor", email="editor@example.com", password="strong-pass-3434"
+        )
+        self.client.force_login(admin)
+        cat = Category.objects.get(slug="used-lines")
+        category_form = self.client.get(reverse("admin:catalog_category_change", args=[cat.pk]))
+        self.assertContains(category_form, 'name="name_kk"')
+        self.assertContains(category_form, 'name="name_en"')
+        item = Product.objects.get(slug="liniya-rozliva-bertolaso-40-40-6")
+        product_form = self.client.get(reverse("admin:catalog_product_change", args=[item.pk]))
+        self.assertContains(product_form, 'name="specifications-0-name_kk"')
+        self.assertContains(product_form, 'name="specifications-0-value_kk"')
+        self.assertContains(product_form, 'name="specifications-0-name_en"')
+        self.assertContains(product_form, 'name="specifications-0-value_en"')

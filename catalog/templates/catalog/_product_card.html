@@ -11,7 +11,7 @@
     <span class="product-condition">{{ product.get_condition_display|t:site_lang }}</span>
   </a>
   <div class="product-info">
-    <div class="product-meta"><span>{{ product.category.name }}</span><span>{{ product.get_availability_display|t:site_lang }}</span></div>
+    <div class="product-meta"><span>{{ product.category|localized:"name" }}</span><span>{{ product.get_availability_display|t:site_lang }}</span></div>
     <h3><a href="{{ product.get_absolute_url }}">{{ product|localized:"title" }}</a></h3>
     {% if product.summary %}<p>{{ product|localized:"summary" }}</p>{% endif %}
     <div class="product-bottom">
