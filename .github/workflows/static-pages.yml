@@ -1,4 +1,4 @@
-name: Static site build and Pages deployment
+name: Static website checks
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: packaging-pages-${{ github.ref }}
+  group: packaging-static-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -26,39 +26,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Generate public HTML
-        env:
-          FORMSPREE_FORM_ID: ${{ vars.FORMSPREE_FORM_ID }}
         run: python scripts/build_static.py --output _site
       - name: Verify public pages
-        env:
-          FORMSPREE_FORM_ID: ${{ vars.FORMSPREE_FORM_ID }}
         run: python scripts/check_static.py --output _site
-      - name: Upload preview ZIP artifact
+      - name: Upload downloadable preview artifact
         uses: actions/upload-artifact@v4
         with:
           name: packaging-static-preview
           path: _site/
           include-hidden-files: true
           retention-days: 7
-      - name: Upload for GitHub Pages
-        if: github.ref == 'refs/heads/main' && vars.PAGES_ENABLED == 'true'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site/
-
-  deploy:
-    name: Publish to GitHub Pages
-    if: github.ref == 'refs/heads/main' && vars.PAGES_ENABLED == 'true'
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
