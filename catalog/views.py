@@ -1,0 +1,198 @@
+import logging
+
+from django.conf import settings
+from django.core.mail import EmailMessage
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import Http404
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.views.decorators.http import require_http_methods
+
+from .forms import InquiryForm
+from .models import Category, Page, Product, Partner
+from .i18n import translate
+
+logger = logging.getLogger(__name__)
+
+
+def site_title(request, label):
+    """Browser tab title follows the selected language."""
+    return f"{translate(label, getattr(request, 'site_lang', 'ru'))} | Packaging Systems"
+
+
+def model_title(obj, request):
+    """Use the editable translated title, or the original as fallback."""
+    lang = getattr(request, "site_lang", "ru")
+    if lang != "ru":
+        translated = next(
+            (t for t in obj.translations.all() if t.language == lang), None
+        )
+        if translated and translated.title:
+            return translated.title
+    return obj.title
+
+
+
+def visible_products():
+    return (
+        Product.objects.filter(status=Product.Status.PUBLISHED, category__is_active=True)
+        .exclude(availability=Product.Availability.SOLD)
+        .select_related("category")
+        .prefetch_related("images", "translations")
+    )
+
+
+def home(request):
+    home_page = Page.objects.filter(slug="home", is_published=True).prefetch_related("translations").first()
+    featured = list(
+        visible_products().filter(featured=True).exclude(
+            availability=Product.Availability.SOLD
+        )[:3]
+    )
+    if len(featured) < 3:
+        seen = [p.pk for p in featured]
+        featured.extend(
+            visible_products().exclude(pk__in=seen).exclude(
+                availability=Product.Availability.SOLD
+            )[:3 - len(featured)]
+        )
+    return render(request, "catalog/home.html", {
+        "home_page": home_page,
+        "featured": featured,
+        "categories": Category.objects.filter(is_active=True)[:5],
+        "partners": Partner.objects.filter(is_active=True),
+        "page_title": site_title(request, "Главная"),
+    })
+
+
+def product_list(request):
+    products = visible_products()
+    query = request.GET.get("q", "").strip()[:120]
+    category = request.GET.get("category", "")
+    condition = request.GET.get("condition", "")
+    sort = request.GET.get("sort", "newest")
+    if query:
+        products = products.filter(
+            Q(title__icontains=query)
+            | Q(manufacturer__icontains=query)
+            | Q(model_name__icontains=query)
+            | Q(description__icontains=query)
+        )
+    if category:
+        products = products.filter(category__slug=category)
+    if condition in Product.Condition.values:
+        products = products.filter(condition=condition)
+    sort_by = {"newest": "-created_at", "price_low": "price", "price_high": "-price"}
+    products = products.order_by(sort_by.get(sort, "-created_at"))
+    paginator = Paginator(products, max(9, products.count()) if settings.STATIC_EXPORT else 9)
+    page_obj = paginator.get_page(request.GET.get("page"))
+    params = request.GET.copy()
+    params.pop("page", None)
+    return render(request, "catalog/product_list.html", {
+        "page_obj": page_obj,
+        "categories": Category.objects.filter(is_active=True),
+        "query": query,
+        "selected_category": category,
+        "selected_condition": condition,
+        "selected_sort": sort,
+        "search_params": params.urlencode(),
+        "page_title": site_title(request, "Сейчас в продаже"),
+    })
+
+
+def product_detail(request, slug):
+    product = get_object_or_404(
+        visible_products().prefetch_related("specifications", "documents"),
+        slug=slug,
+    )
+    return render(request, "catalog/product_detail.html", {
+        "product": product,
+        "page_title": f"{model_title(product, request)} | Packaging Systems",
+    })
+
+
+def info_page(request, slug):
+    page = get_object_or_404(Page.objects.prefetch_related("translations"), slug=slug, is_published=True)
+    return render(request, "catalog/info_page.html", {
+        "page": page, "page_title": f"{model_title(page, request)} | Packaging Systems",
+    })
+
+
+@require_http_methods(["GET", "POST"])
+def contact(request):
+    initial = {}
+    if request.method == "GET":
+        product = visible_products().filter(slug=request.GET.get("product", "")).first()
+        if product:
+            initial["product"] = product.pk
+    form = InquiryForm(request.POST or None, initial=initial, language=getattr(request, "site_lang", "ru"))
+    if request.method == "POST" and form.is_valid():
+        inquiry = form.save()
+        product_title = inquiry.product.title if inquiry.product else "Без привязки к товару"
+        body = (
+            f"Тема обращения: {inquiry.subject}\n"
+            f"Новая заявка с сайта Packaging Systems\n\n"
+            f"Имя: {inquiry.name}\n"
+            f"Email: {inquiry.email}\n"
+            f"Телефон: {inquiry.phone or 'Не указан'}\n"
+            f"Компания: {inquiry.company or 'Не указана'}\n"
+            f"Оборудование: {product_title}\n\n"
+            f"Сообщение:\n{inquiry.message}\n"
+        )
+        try:
+            if not settings.EMAIL_HOST and not settings.DEBUG and settings.EMAIL_BACKEND != "django.core.mail.backends.locmem.EmailBackend":
+                return redirect("catalog:thanks")
+            sent = EmailMessage(
+                subject="Packaging Systems: новая заявка",
+                body=body,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[settings.COMPANY_EMAIL],
+                reply_to=[inquiry.email],
+            ).send(fail_silently=False)
+            if sent:
+                inquiry.email_sent = True
+                inquiry.save(update_fields=["email_sent"])
+        except Exception:
+            logger.exception("Failed to email inquiry %s; stored in database", inquiry.pk)
+        return redirect("catalog:thanks")
+    return render(request, "catalog/contact.html", {
+        "form": form,
+        "page_title": site_title(request, "Обратная связь"),
+    })
+
+
+def thanks(request):
+    return render(request, "catalog/thanks.html", {
+        "page_title": site_title(request, "Запрос получен"),
+    })
+
+
+def privacy(request):
+    return render(request, "catalog/privacy.html", {
+        "page_title": site_title(request, "Обработка персональных данных"),
+    })
+
+
+@staff_member_required
+def preview_product(request, pk):
+    """Staff-only preview; drafts are never exposed through public catalog URLs."""
+    product = get_object_or_404(
+        Product.objects.select_related("category").prefetch_related(
+            "images", "specifications", "documents", "translations"
+        ),
+        pk=pk,
+    )
+    return render(request, "catalog/product_detail.html", {
+        "product": product,
+        "preview_mode": True,
+        "page_title": f"{translate('Предпросмотр', getattr(request, 'site_lang', 'ru'))}: {model_title(product, request)} | Packaging Systems",
+    })
+
+
+def partners(request):
+    return render(request, "catalog/partners.html", {
+        "partners": Partner.objects.filter(is_active=True),
+        "page_title": site_title(request, "Наши партнеры"),
+    })

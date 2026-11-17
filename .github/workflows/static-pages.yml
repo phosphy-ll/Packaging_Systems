@@ -1,0 +1,38 @@
+name: Static website checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: packaging-static-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build static RU/KZ/EN site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Generate public HTML
+        run: python scripts/build_static.py --output _site
+      - name: Verify public pages
+        run: python scripts/check_static.py --output _site
+      - name: Upload downloadable preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: packaging-static-preview
+          path: _site/
+          include-hidden-files: true
+          retention-days: 7

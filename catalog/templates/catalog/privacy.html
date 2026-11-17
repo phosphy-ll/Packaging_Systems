@@ -1,0 +1,39 @@
+{% extends "catalog/base.html" %}
+{% load catalog_i18n %}
+{% block content %}
+<section class="page-hero page-hero-dark"><div class="container"><div class="breadcrumbs"><a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a><span>/</span> {% tr "Персональные данные" %}</div><h1>{% tr "Обработка персональных данных" %}</h1></div></section>
+<section class="section"><div class="container narrow-content rich-text">
+{% if static_export %}
+  {% if site_lang == "en" %}
+    <p>When you send an inquiry, Packaging Systems receives your name, email, optional phone number and company, message subject, message and equipment details.</p>
+    <p>Form data is submitted to Netlify Forms, our website hosting provider's form service, for processing and storage; email notifications may be sent to our business inbox. We use the data to answer your request. Contact <a href="mailto:{{ company_email }}">{{ company_email }}</a> to ask about access, correction or deletion.</p>
+    <p>Information about data access, correction or deletion is available on request at the email address above.</p>
+  {% elif site_lang == "kk" %}
+    <p>Сұраныс жібергенде Packaging Systems сіздің атыңызды, электрондық поштаңызды, міндетті емес телефон және компания деректерін, тақырыпты, хабарламаны және жабдық туралы мәліметтерді алады.</p>
+    <p>Деректер Netlify Forms қызметіне өңдеу және сақтау үшін жіберіледі; хабарландырулар компания поштасына жеткізілуі мүмкін. Ақпаратты қарау, түзету немесе жою туралы <a href="mailto:{{ company_email }}">{{ company_email }}</a> мекенжайына жазыңыз.</p>
+    <p>Деректерге қол жеткізу, түзету немесе жою туралы өтінішті жоғарыдағы электрондық поштаға жіберуге болады.</p>
+  {% else %}
+    <p>При отправке обращения Packaging Systems получает имя, email, необязательные телефон и компанию, тему и текст сообщения, а также сведения об оборудовании.</p>
+    <p>Данные передаются сервису Netlify Forms для обработки и хранения заявки. Уведомления могут отправляться на корпоративную почту. Они используются для ответа на обращение. Запросы на доступ, исправление или удаление данных направляйте на <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
+    <p>Для получения сведений об обработке данных, их исправления или удаления используйте контактный адрес выше.</p>
+  {% endif %}
+{% else %}
+{% if site_lang == "kk" %}
+<p>Форманы жіберген кезде Packaging Systems сіз көрсеткен аты-жөніңізді, email мекенжайыңызды, міндетті емес телефон және компания деректерін, хабарламаңызды және қызықтыратын жабдық туралы мәліметтерді алады.</p>
+<p>Деректер сұранысты қабылдау, өңдеу және жауап беру үшін қолданылады. Хабарлама жабық әкімшілік жүйеде сақталады. Пошта реттелген болса, көшірме <a href="mailto:{{ company_email }}">{{ company_email }}</a> мекенжайына жіберіледі.</p>
+<p>Деректерді нақтылау, түзету немесе жою туралы өтінішті <a href="mailto:{{ company_email }}">{{ company_email }}</a> мекенжайына жіберіңіз.</p>
+<p>Сайт жарияланар алдында иесі қолданыстағы заңнамаға сай дербес деректерді өңдеу және сақтау саясатын бекітуі керек.</p>
+{% elif site_lang == "en" %}
+<p>When you submit a form, Packaging Systems receives the name, email address, optional phone number and company, message and equipment information you provide.</p>
+<p>We use the data to receive and process your inquiry and prepare a response. Inquiries are saved in a restricted administration system. If email delivery is configured, a copy is sent to <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
+<p>To request access, correction or deletion of your submitted data, email <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
+<p>Before the public launch, the site owner must approve a final personal data processing and retention policy in accordance with applicable law.</p>
+{% else %}
+  <p>При отправке формы Packaging Systems получает указанные вами имя, email, необязательные телефон и компанию, текст сообщения и сведения об интересующем оборудовании.</p>
+  <p>Данные используются для получения и обработки запроса, обратной связи и подготовки предложения. Обращение сохраняется в закрытой административной системе. При наличии почтовой настройки копия отправляется на адрес <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
+  <p>Чтобы уточнить, исправить или запросить удаление предоставленных через форму данных, напишите на <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
+  <p>До публичного запуска сайта владелец ресурса должен утвердить окончательную политику обработки и хранения данных в соответствии с применимым законодательством.</p>
+{% endif %}
+{% endif %}
+</div></section>
+{% endblock %}
