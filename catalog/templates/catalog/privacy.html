@@ -3,6 +3,21 @@
 {% block content %}
 <section class="page-hero page-hero-dark"><div class="container"><div class="breadcrumbs"><a href="{% url 'catalog:home' %}">{% tr "Главная" %}</a><span>/</span> {% tr "Персональные данные" %}</div><h1>{% tr "Обработка персональных данных" %}</h1></div></section>
 <section class="section"><div class="container narrow-content rich-text">
+{% if static_export %}
+  {% if site_lang == "en" %}
+    <p>When you send an inquiry, Packaging Systems receives your name, email, optional phone number and company, message subject, message and equipment details.</p>
+    <p>Form data is submitted to Formspree, a third-party form service, for processing and email notification. We use the data to answer your request. Contact <a href="mailto:{{ company_email }}">{{ company_email }}</a> to ask about access, correction or deletion.</p>
+    <p>The site owner must confirm applicable privacy requirements and the service's terms before enabling live submissions.</p>
+  {% elif site_lang == "kk" %}
+    <p>Сұраныс жібергенде Packaging Systems сіздің атыңызды, электрондық поштаңызды, міндетті емес телефон және компания деректерін, тақырыпты, хабарламаны және жабдық туралы мәліметтерді алады.</p>
+    <p>Деректер Formspree үшінші тарап қызметіне өңдеу және компания поштасына хабарлама жеткізу үшін жіберіледі. Ақпаратты қарау, түзету немесе жою туралы <a href="mailto:{{ company_email }}">{{ company_email }}</a> мекенжайына жазыңыз.</p>
+    <p>Онлайн-форманы іске қоспас бұрын сайт иесі деректерді өңдеу талаптарын және провайдердің шарттарын тексеруі керек.</p>
+  {% else %}
+    <p>При отправке обращения Packaging Systems получает имя, email, необязательные телефон и компанию, тему и текст сообщения, а также сведения об оборудовании.</p>
+    <p>Данные передаются стороннему сервису Formspree для обработки заявки и отправки уведомления на корпоративную почту. Они используются для ответа на обращение. Запросы на доступ, исправление или удаление данных направляйте на <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
+    <p>До включения приёма заявок владелец сайта должен проверить применимые требования законодательства и утвердить условия обработки данных.</p>
+  {% endif %}
+{% else %}
 {% if site_lang == "kk" %}
 <p>Форманы жіберген кезде Packaging Systems сіз көрсеткен аты-жөніңізді, email мекенжайыңызды, міндетті емес телефон және компания деректерін, хабарламаңызды және қызықтыратын жабдық туралы мәліметтерді алады.</p>
 <p>Деректер сұранысты қабылдау, өңдеу және жауап беру үшін қолданылады. Хабарлама жабық әкімшілік жүйеде сақталады. Пошта реттелген болса, көшірме <a href="mailto:{{ company_email }}">{{ company_email }}</a> мекенжайына жіберіледі.</p>
@@ -18,6 +33,7 @@
   <p>Данные используются для получения и обработки запроса, обратной связи и подготовки предложения. Обращение сохраняется в закрытой административной системе. При наличии почтовой настройки копия отправляется на адрес <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
   <p>Чтобы уточнить, исправить или запросить удаление предоставленных через форму данных, напишите на <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
   <p>До публичного запуска сайта владелец ресурса должен утвердить окончательную политику обработки и хранения данных в соответствии с применимым законодательством.</p>
+{% endif %}
 {% endif %}
 </div></section>
 {% endblock %}

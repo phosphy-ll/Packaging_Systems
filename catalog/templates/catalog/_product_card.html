@@ -1,5 +1,5 @@
 {% load static catalog_i18n %}
-<article class="product-card">
+<article class="product-card" data-category="{{ product.category.slug }}" data-condition="{{ product.condition }}" data-price="{{ product.price|default_if_none:'' }}" data-currency="{{ product.currency }}">
   <a class="product-image" href="{{ product.get_absolute_url }}" aria-label="Открыть {{ product|localized:"title" }}">
     {% if product.images.all %}
       {% for photo in product.images.all %}

@@ -10,6 +10,11 @@
   <link rel="icon" type="image/png" href="{% static 'catalog/favicon.png' %}?v=3">
   <link rel="stylesheet" href="{% static 'catalog/site.css' %}">
   <script defer src="{% static 'catalog/site.js' %}"></script>
+  {% if static_export %}
+  <link rel="stylesheet" href="{% static 'catalog/static_overrides.css' %}">
+  <script defer src="{% static 'catalog/static_forms.js' %}"></script>
+  <script defer src="{% static 'catalog/static_catalog.js' %}"></script>
+  {% endif %}
 </head>
 <body>
   <div class="topbar">

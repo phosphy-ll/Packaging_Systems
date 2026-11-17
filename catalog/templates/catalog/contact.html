@@ -16,12 +16,18 @@
       <h2>{% tr "Готовы обсудить ваш проект" %}</h2>
       <div class="contact-block"><span>{% tr "ЭЛЕКТРОННАЯ ПОЧТА" %}</span><a href="mailto:{{ company_email }}">{{ company_email }}</a></div>
       <div class="contact-block"><span>{% tr "МЕСТОПОЛОЖЕНИЕ" %}</span><strong>{% tr "Алматы, Казахстан" %}</strong></div>
-      <p>{% tr "Заявки из формы также сохраняются в системе, чтобы менеджер мог обработать обращение." %}</p>
+      {% if static_export %}
+      {% if site_lang == "en" %}<p>Inquiries are securely submitted through Formspree and delivered to our business email.</p>
+      {% elif site_lang == "kk" %}<p>Сұраныстар Formspree арқылы қауіпсіз жіберіліп, компанияның электрондық поштасына жеткізіледі.</p>
+      {% else %}<p>Заявки отправляются через Formspree на корпоративную почту.</p>{% endif %}
+      {% else %}<p>{% tr "Заявки из формы также сохраняются в системе, чтобы менеджер мог обработать обращение." %}</p>{% endif %}
     </div>
     <div class="form-panel">
       <div class="form-heading"><span class="card-number">{% tr "ЗАЯВКА / PACKAGING SYSTEMS" %}</span><h2>{% tr "Отправить запрос" %}</h2><p>{% tr "Поля, отмеченные *, обязательны." %}</p></div>
-      <form method="post" action="{% url 'catalog:contact' %}" class="contact-form" novalidate>
-        {% csrf_token %}
+      <form method="post" action="{% if static_export and formspree_form_id %}https://formspree.io/f/{{ formspree_form_id }}{% else %}{% url 'catalog:contact' %}{% endif %}" class="contact-form" {% if static_export %}data-static-contact data-success-url="{% url 'catalog:thanks' %}"{% else %}novalidate{% endif %}>
+        {% if not static_export %}{% csrf_token %}{% else %}
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="form-honeypot">
+        {% endif %}
         {{ form.product }}{{ form.website }}
         {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
         <div class="form-row">
@@ -37,7 +43,14 @@
         {% if form.initial.product %}<div class="form-info">{% tr "К обращению прикреплено выбранное оборудование." %}</div>{% endif %}
         <label class="checkbox-field">{{ form.consent }} <span><a href="{% url 'catalog:privacy' %}" target="_blank" rel="noopener">{% tr "Согласен(на) на обработку персональных данных для ответа на мой запрос." %}</a> *</span></label>
         {{ form.consent.errors }}
-        <button class="button button-primary button-large button-full" type="submit">{% tr "Отправить запрос" %} ↗</button>
+        {% if static_export and not formspree_form_id %}
+          <div class="form-info" role="status">
+            {% if site_lang == "en" %}Online inquiries are being configured. You can email us at {% elif site_lang == "kk" %}Онлайн-форма қосылып жатыр. Әзірге мына поштаға жазыңыз: {% else %}Онлайн-форма пока подключается. Напишите нам на почту: {% endif %}
+            <a href="mailto:{{ company_email }}">{{ company_email }}</a>
+          </div>
+        {% endif %}
+        <p class="form-errors" data-form-feedback role="alert" hidden></p>
+        <button class="button button-primary button-large button-full" type="submit" {% if static_export and not formspree_form_id %}disabled{% endif %}>{% tr "Отправить запрос" %} ↗</button>
       </form>
     </div>
   </div>
