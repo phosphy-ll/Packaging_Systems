@@ -33,6 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     try {
       const data = new FormData(form);
+      // Make native Netlify emails easier to scan without changing the form schema.
+      // The subject field controls the notification email's subject line.
+      const topic = String(data.get("subject") || "").trim();
+      data.set("subject", `Packaging Systems | ${topic}`);
+      data.set("message", String(data.get("message") || "").trim());
+
+      // Do not submit unused optional contact fields as empty rows.
+      for (const field of ["product", "phone", "company"]) {
+        if (!String(data.get(field) || "").trim()) data.delete(field);
+      }
+      if (data.has("consent")) data.set("consent", "Confirmed");
+
       // Netlify identifies a form from its registered name. Payload must be URL-encoded.
       data.set("form-name", form.getAttribute("name") || "packaging-inquiry");
       const response = await fetch("/", {
