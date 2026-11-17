@@ -128,3 +128,7 @@ if env_bool("DJANGO_TRUST_PROXY_SSL_HEADER", False):
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 DATA_UPLOAD_MAX_MEMORY_SIZE = 8 * 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
+
+# Used only to generate the public GitHub Pages site, never served by Django.
+STATIC_EXPORT = env_bool("STATIC_EXPORT", False)
+FORMSPREE_FORM_ID = os.getenv("FORMSPREE_FORM_ID", "").strip()

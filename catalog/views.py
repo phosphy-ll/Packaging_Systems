@@ -86,7 +86,7 @@ def product_list(request):
         products = products.filter(condition=condition)
     sort_by = {"newest": "-created_at", "price_low": "price", "price_high": "-price"}
     products = products.order_by(sort_by.get(sort, "-created_at"))
-    paginator = Paginator(products, 9)
+    paginator = Paginator(products, max(9, products.count()) if settings.STATIC_EXPORT else 9)
     page_obj = paginator.get_page(request.GET.get("page"))
     params = request.GET.copy()
     params.pop("page", None)
