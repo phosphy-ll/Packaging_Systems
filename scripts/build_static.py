@@ -19,7 +19,7 @@ from urllib.parse import urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 LANGUAGES = ("ru", "kk", "en")
 SAFE_SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-LINK_ATTR = re.compile(r'(?P<attr>\b(?:href|src|action|data-success-url))=(?P<q>["\'])(?P<url>[^"\']*)(?P=q)')
+LINK_ATTR = re.compile(r'(?P<attr>\b(?:href|src|action))=(?P<q>["\'])(?P<url>[^"\']*)(?P=q)')
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
 PDF_SUFFIXES = {".pdf"}
 MAX_FILE_SIZE = 20 * 1024 * 1024
