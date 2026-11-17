@@ -40,6 +40,29 @@ def main():
         assert "data-category=" in catalog, "Catalog filters require product metadata"
         assert "formspree.io/f/" in contact or "disabled" in contact
 
+    # Photo archive is uploaded separately. If it exists in the repository,
+    # an accidental deployment without actual equipment photos must fail.
+    repo_root = Path(__file__).resolve().parents[1]
+    archive_exists = any((
+        (repo_root / "Packaging_Systems_assets.zip").is_file(),
+        (repo_root / "content" / "assets" / "Packaging_Systems_assets.zip").is_file(),
+    ))
+    if archive_exists:
+        product_images = list((root / "media" / "products").rglob("*.webp"))
+        partner_logos = list((root / "media" / "partners").rglob("*.webp"))
+        assert len(product_images) >= 15, (
+            f"Asset archive exists, but only {len(product_images)} product images exported"
+        )
+        assert len(partner_logos) >= 17, (
+            f"Asset archive exists, but only {len(partner_logos)} partner logos exported"
+        )
+        catalog_en = (root / "en" / "catalog" / "index.html").read_text(encoding="utf-8")
+        assert "/media/" not in catalog_en or "webp" in catalog_en
+        print(f"Asset archive validated: {len(product_images)} product images, "
+              f"{len(partner_logos)} partner logos.")
+    else:
+        print("Photos not in repository: upload Packaging_Systems_assets.zip once.")
+
     pages = list(root.rglob("index.html"))
     assert len(pages) >= 30, "Expected home, catalog, info pages and product in each language"
     for page in pages:
