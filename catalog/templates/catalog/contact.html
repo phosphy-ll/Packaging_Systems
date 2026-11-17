@@ -29,7 +29,7 @@
         <input type="hidden" name="form-name" value="packaging-inquiry">
         <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="form-honeypot">
         {% endif %}
-        {{ form.product }}{% if not static_export %}{{ form.website }}{% endif %}
+        {% if not static_export %}{{ form.website }}{% endif %}
         {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
         <div class="form-row">
           <label>{% tr "Имя" %} *{{ form.name }}{{ form.name.errors }}</label>
@@ -44,6 +44,7 @@
         {% if form.initial.product %}<div class="form-info">{% tr "К обращению прикреплено выбранное оборудование." %}</div>{% endif %}
         <label class="checkbox-field">{{ form.consent }} <span><a href="{% url 'catalog:privacy' %}" target="_blank" rel="noopener">{% tr "Согласен(на) на обработку персональных данных для ответа на мой запрос." %}</a> *</span></label>
         {{ form.consent.errors }}
+        {{ form.product }}
         {% if static_export %}<div class="form-info">{% if site_lang == "en" %}If the form does not work, contact us by email:{% elif site_lang == "kk" %}Егер форма жұмыс істемесе, электрондық поштаға жазыңыз:{% else %}Если возникнет ошибка отправки, напишите напрямую:{% endif %} <a href="mailto:{{ company_email }}">{{ company_email }}</a></div>{% endif %}
         <p class="form-errors" data-form-feedback role="alert" hidden></p>
         <button class="button button-primary button-large button-full" type="submit">{% tr "Отправить запрос" %} ↗</button>
