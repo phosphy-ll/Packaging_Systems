@@ -24,7 +24,7 @@
     </div>
     <div class="form-panel">
       <div class="form-heading"><span class="card-number">{% tr "ЗАЯВКА / PACKAGING SYSTEMS" %}</span><h2>{% tr "Отправить запрос" %}</h2><p>{% tr "Поля, отмеченные *, обязательны." %}</p></div>
-      <form method="post" action="{% if static_export %}{% url 'catalog:thanks' %}{% else %}{% url 'catalog:contact' %}{% endif %}" class="contact-form" {% if static_export %}name="packaging-inquiry" data-netlify="true" data-netlify-honeypot="_gotcha" data-static-contact data-success-url="{% url 'catalog:thanks' %}"{% else %}novalidate{% endif %}>
+      <form method="post" action="{% if static_export %}{% url 'catalog:thanks' %}{% else %}{% url 'catalog:contact' %}{% endif %}" class="contact-form" {% if static_export %}name="packaging-inquiry" data-netlify="true" data-netlify-honeypot="_gotcha" data-static-contact{% else %}novalidate{% endif %}>
         {% if not static_export %}{% csrf_token %}{% else %}
         <input type="hidden" name="form-name" value="packaging-inquiry">
         <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="form-honeypot">

@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
         credentials: "same-origin"
       });
       if (!response.ok) throw new Error("HTTP " + response.status);
-      window.location.assign(form.dataset.successUrl || "../thanks/");
+      window.location.assign(new URL("../thanks/", window.location.href).href);
     } catch (err) {
       console.error("Netlify Forms failed", err);
       if (feedback) {feedback.textContent = words.error; feedback.hidden = false;}
