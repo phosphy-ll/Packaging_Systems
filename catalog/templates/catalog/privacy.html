@@ -6,16 +6,16 @@
 {% if static_export %}
   {% if site_lang == "en" %}
     <p>When you send an inquiry, Packaging Systems receives your name, email, optional phone number and company, message subject, message and equipment details.</p>
-    <p>Form data is submitted to Formspree, a third-party form service, for processing and email notification. We use the data to answer your request. Contact <a href="mailto:{{ company_email }}">{{ company_email }}</a> to ask about access, correction or deletion.</p>
-    <p>The site owner must confirm applicable privacy requirements and the service's terms before enabling live submissions.</p>
+    <p>Form data is submitted to Netlify Forms, our website hosting provider's form service, for processing and storage; email notifications may be sent to our business inbox. We use the data to answer your request. Contact <a href="mailto:{{ company_email }}">{{ company_email }}</a> to ask about access, correction or deletion.</p>
+    <p>Information about data access, correction or deletion is available on request at the email address above.</p>
   {% elif site_lang == "kk" %}
     <p>Сұраныс жібергенде Packaging Systems сіздің атыңызды, электрондық поштаңызды, міндетті емес телефон және компания деректерін, тақырыпты, хабарламаны және жабдық туралы мәліметтерді алады.</p>
-    <p>Деректер Formspree үшінші тарап қызметіне өңдеу және компания поштасына хабарлама жеткізу үшін жіберіледі. Ақпаратты қарау, түзету немесе жою туралы <a href="mailto:{{ company_email }}">{{ company_email }}</a> мекенжайына жазыңыз.</p>
-    <p>Онлайн-форманы іске қоспас бұрын сайт иесі деректерді өңдеу талаптарын және провайдердің шарттарын тексеруі керек.</p>
+    <p>Деректер Netlify Forms қызметіне өңдеу және сақтау үшін жіберіледі; хабарландырулар компания поштасына жеткізілуі мүмкін. Ақпаратты қарау, түзету немесе жою туралы <a href="mailto:{{ company_email }}">{{ company_email }}</a> мекенжайына жазыңыз.</p>
+    <p>Деректерге қол жеткізу, түзету немесе жою туралы өтінішті жоғарыдағы электрондық поштаға жіберуге болады.</p>
   {% else %}
     <p>При отправке обращения Packaging Systems получает имя, email, необязательные телефон и компанию, тему и текст сообщения, а также сведения об оборудовании.</p>
-    <p>Данные передаются стороннему сервису Formspree для обработки заявки и отправки уведомления на корпоративную почту. Они используются для ответа на обращение. Запросы на доступ, исправление или удаление данных направляйте на <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
-    <p>До включения приёма заявок владелец сайта должен проверить применимые требования законодательства и утвердить условия обработки данных.</p>
+    <p>Данные передаются сервису Netlify Forms для обработки и хранения заявки. Уведомления могут отправляться на корпоративную почту. Они используются для ответа на обращение. Запросы на доступ, исправление или удаление данных направляйте на <a href="mailto:{{ company_email }}">{{ company_email }}</a>.</p>
+    <p>Для получения сведений об обработке данных, их исправления или удаления используйте контактный адрес выше.</p>
   {% endif %}
 {% else %}
 {% if site_lang == "kk" %}

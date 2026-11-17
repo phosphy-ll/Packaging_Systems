@@ -1,42 +1,53 @@
-/* Client-side contact form for the static export. No passwords or API secrets. */
+/* Contact form submissions are processed by Netlify Forms.
+ * No third-party API keys, SMTP passwords or email credentials in the browser.
+ */
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form[data-static-contact]");
   if (!form) return;
   const lang = document.documentElement.lang || "ru";
   const words = {
-    ru: {sending:"Отправка...", error:"Не удалось отправить запрос. Попробуйте ещё раз или напишите на info@packaging.kz."},
-    kk: {sending:"Жіберілуде...", error:"Сұраныс жіберілмеді. Қайталап көріңіз немесе info@packaging.kz мекенжайына жазыңыз."},
-    en: {sending:"Sending...", error:"Could not submit your inquiry. Please try again or email info@packaging.kz."}
-  }[lang] || {sending:"Sending...", error:"Error. Please email info@packaging.kz."};
+    ru: {sending: "Отправка...", error: "Заявка не отправлена. Повтори попытку или напиши на info@packaging.kz."},
+    kk: {sending: "Жіберілуде...", error: "Өтінім жіберілмеді. Қайта көріңіз немесе info@packaging.kz мекенжайына жазыңыз."},
+    en: {sending: "Sending...", error: "Your inquiry was not sent. Please retry or email info@packaging.kz."}
+  }[lang] || {sending: "Sending...", error: "Please retry or email info@packaging.kz."};
 
-  const slug = new URLSearchParams(window.location.search).get("product");
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get("product");
   const product = form.querySelector('input[name="product"]');
   if (product && slug && /^[a-z0-9-]{1,180}$/.test(slug)) product.value = slug;
 
   const feedback = form.querySelector("[data-form-feedback]");
   const submit = form.querySelector('button[type="submit"]');
-  form.addEventListener("submit", async (event) => {
-    if (submit?.disabled) { event.preventDefault(); return; }
-    if (!form.reportValidity()) { event.preventDefault(); return; }
+  form.addEventListener("submit", async event => {
+    if (submit?.disabled || !form.reportValidity()) {
+      event.preventDefault();
+      return;
+    }
     event.preventDefault();
-    const original = submit.textContent;
+    const previous = submit.textContent;
     submit.disabled = true;
     submit.textContent = words.sending;
-    if (feedback) { feedback.hidden = true; feedback.textContent = ""; }
+    if (feedback) {
+      feedback.hidden = true;
+      feedback.textContent = "";
+    }
     try {
-      const response = await fetch(form.action, {
+      const data = new FormData(form);
+      // Netlify identifies a form from its registered name. Payload must be URL-encoded.
+      data.set("form-name", form.getAttribute("name") || "packaging-inquiry");
+      const response = await fetch("/", {
         method: "POST",
-        body: new FormData(form),
-        headers: { Accept: "application/json" },
-        redirect: "follow"
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: new URLSearchParams(data).toString(),
+        credentials: "same-origin"
       });
-      if (!response.ok) throw new Error("Form provider returned HTTP " + response.status);
+      if (!response.ok) throw new Error("HTTP " + response.status);
       window.location.assign(form.dataset.successUrl || "../thanks/");
-    } catch (error) {
-      console.error("Contact form submission failed", error);
-      if (feedback) { feedback.textContent = words.error; feedback.hidden = false; }
+    } catch (err) {
+      console.error("Netlify Forms failed", err);
+      if (feedback) {feedback.textContent = words.error; feedback.hidden = false;}
       submit.disabled = false;
-      submit.textContent = original;
+      submit.textContent = previous;
     }
   });
 });
