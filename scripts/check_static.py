@@ -41,6 +41,7 @@ def main():
         assert 'name="packaging-inquiry"' in contact
         assert 'data-netlify="true"' in contact
         assert 'name="form-name" value="packaging-inquiry"' in contact
+        assert f'data-success-url="../../{lang}/thanks/"' in contact
         assert 'name="_gotcha"' in contact
         assert 'type="submit" disabled' not in contact
         assert 'formspree.io' not in contact

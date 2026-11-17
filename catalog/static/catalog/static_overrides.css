@@ -1,5 +1,0 @@
-.form-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
-.contact-form button[disabled]{opacity:.45;cursor:not-allowed}
-.static-catalog-empty{padding:28px;background:#f3f5f6;color:#647079;border:1px solid #dde3e6}
-.product-card[hidden]{display:none!important}
-.form-errors[hidden]{display:none!important}
