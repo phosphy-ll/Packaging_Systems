@@ -38,7 +38,12 @@ def main():
         assert 'name="_gotcha"' in contact
         assert 'href="/' not in home, "Public navigation must support repository paths"
         assert "data-category=" in catalog, "Catalog filters require product metadata"
-        assert "formspree.io/f/" in contact or "disabled" in contact
+        assert 'name="packaging-inquiry"' in contact
+        assert 'data-netlify="true"' in contact
+        assert 'name="form-name" value="packaging-inquiry"' in contact
+        assert 'name="_gotcha"' in contact
+        assert 'type="submit" disabled' not in contact
+        assert 'formspree.io' not in contact
 
     # Photo archive is uploaded separately. If it exists in the repository,
     # an accidental deployment without actual equipment photos must fail.
@@ -71,6 +76,7 @@ def main():
         assert 'href="/admin-preview/' not in text
         assert not re.search(r'(?:href|src)="/(?:static|media)/', text)
         assert "DJANGO_SECRET_KEY" not in text
+        assert "formspree.io" not in text
 
     print(f"Verified {len(pages)} static pages in {root}")
 
